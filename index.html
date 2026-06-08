@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Музей Жени</title>
+  <style>
+    :root {
+      --bg: #f6efe3;
+      --ink: #241c16;
+      --muted: #7b6757;
+      --gold: #b88746;
+      --red: #8f2f2f;
+      --card: #fffaf0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    header {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 40px 20px;
+      background:
+        linear-gradient(rgba(246,239,227,.88), rgba(246,239,227,.96)),
+        url("https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .label {
+      color: var(--red);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 10vw, 120px);
+      line-height: .9;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 28px auto 0;
+      font-size: clamp(20px, 3vw, 32px);
+      color: var(--muted);
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 36px;
+      padding: 14px 26px;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      text-decoration: none;
+      border-radius: 999px;
+      transition: .2s ease;
+      background: rgba(255,250,240,.6);
+    }
+
+    .btn:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    section {
+      padding: 90px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .museum-title {
+      text-align: center;
+      margin-bottom: 55px;
+    }
+
+    .museum-title span {
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 13px;
+    }
+
+    .museum-title h2 {
+      font-size: clamp(34px, 5vw, 64px);
+      font-weight: 400;
+      margin: 10px 0;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(36,28,22,.18);
+      padding: 28px;
+      min-height: 280px;
+      box-shadow: 0 16px 40px rgba(36,28,22,.08);
+    }
+
+    .card .number {
+      color: var(--gold);
+      font-size: 14px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .card h3 {
+      font-size: 28px;
+      font-weight: 400;
+      margin: 18px 0 14px;
+    }
+
+    .quote {
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.15;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .catalog {
+      background: var(--ink);
+      color: var(--bg);
+      max-width: none;
+      padding: 90px 20px;
+    }
+
+    .catalog-inner {
+      max-width: 760px;
+      margin: auto;
+      border: 1px solid rgba(246,239,227,.35);
+      padding: 40px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid rgba(246,239,227,.2);
+      padding: 16px 0;
+    }
+
+    .row span:first-child {
+      color: #d4b483;
+    }
+
+    footer {
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    footer h2 {
+      font-size: clamp(42px, 7vw, 88px);
+      font-weight: 400;
+      margin: 0;
+    }
+
+    footer p {
+      max-width: 720px;
+      margin: 28px auto 0;
+      font-size: 22px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      .row {
+        display: block;
+      }
+
+      .catalog-inner {
+        padding: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <div class="label">Временная выставка · только сегодня · бессрочно в сердцах</div>
+      <h1>Музей Жени</h1>
+      <p class="subtitle">
+        Экспозиция, посвящённая человеку, который умеет превращать картины в истории,
+        даты — в путешествия, а искусство — в живой разговор.
+      </p>
+      <a class="btn" href="#exhibition">Войти в музей</a>
+    </div>
+  </header>
+
+  <section id="exhibition">
+    <div class="museum-title">
+      <span>Постоянная коллекция</span>
+      <h2>Женя как произведение искусства</h2>
+    </div>
+
+    <div class="gallery">
+      <article class="card">
+        <div class="number">Зал I</div>
+        <h3>Искусство замечать</h3>
+        <p>
+          Женя видит не просто картину, а эпоху, характер, драму, свет,
+          композицию и пару деталей, которые остальные точно пропустили.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="number">Зал II</div>
+        <h3>Эпоха Возрождения</h3>
+        <p>
+          После разговоров с Женей у людей внезапно возрождается интерес к музеям,
+          художникам, выставкам и подписям под картинами.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="number">Зал III</div>
+        <h3>Барокко знаний</h3>
+        <p>
+          Здесь много блеска, глубины, неожиданных фактов и эффектных поворотов.
+          Всё как мы любим: красиво, умно и чуть драматично.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="number">Зал IV</div>
+        <h3>Современное искусство</h3>
+        <p>
+          Интерактивная инсталляция: Женя терпеливо объясняет,
+          почему «вот это» тоже искусство. И внезапно становится понятно.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <p class="quote">
+      Самое ценное искусство — это люди, после которых начинаешь смотреть
+      на мир внимательнее.
+    </p>
+  </section>
+
+  <section class="catalog">
+    <div class="catalog-inner">
+      <div class="museum-title">
+        <span>Каталожная карточка</span>
+        <h2>Главный экспонат</h2>
+      </div>
+
+      <div class="row">
+        <span>Название</span>
+        <strong>Женя</strong>
+      </div>
+      <div class="row">
+        <span>Автор</span>
+        <strong>Вселенная</strong>
+      </div>
+      <div class="row">
+        <span>Материал</span>
+        <strong>ум, вкус, доброта, харизма</strong>
+      </div>
+      <div class="row">
+        <span>Стиль</span>
+        <strong>уникальный</strong>
+      </div>
+      <div class="row">
+        <span>Статус</span>
+        <strong>бесценный экспонат</strong>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h2>С днём рождения, Женя!</h2>
+    <p>
+      Пусть впереди будет больше путешествий, выставок, вдохновения,
+      любимых людей, красивых открытий и дней, достойных отдельной экспозиции.
+    </p>
+  </footer>
+</body>
+</html>
