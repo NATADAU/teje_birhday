@@ -1,605 +1,1174 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Музей Жени</title>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: #fff0c8;
-      background:
-        radial-gradient(circle at top, rgba(255, 220, 130, .22), transparent 35%),
-        linear-gradient(135deg, #120607, #32080f 45%, #070203);
-      overflow-x: hidden;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    .music {
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      z-index: 10;
-      padding: 12px 18px;
-      border-radius: 999px;
-      border: 1px solid #d7aa55;
-      background: rgba(20, 5, 8, .78);
-      color: #ffe7a3;
-      font-family: inherit;
-      cursor: pointer;
-      box-shadow: 0 0 25px rgba(215, 170, 85, .35);
-    }
-
-    .hero {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .label {
-      color: #d7aa55;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      font-size: 12px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(64px, 14vw, 150px);
-      line-height: .85;
-      font-weight: 400;
-      background: linear-gradient(90deg, #8a5d20, #fff0ae, #c38a35, #ffe7a3);
-      -webkit-background-clip: text;
-      color: transparent;
-      text-shadow: 0 20px 60px rgba(0,0,0,.55);
-    }
-
-    .hero p {
-      max-width: 720px;
-      margin: 28px auto 0;
-      font-size: clamp(20px, 3vw, 30px);
-      color: #f5dca8;
-    }
-
-    .btn {
-      display: inline-block;
-      margin-top: 34px;
-      padding: 15px 30px;
-      border-radius: 999px;
-      border: 1px solid #d7aa55;
-      color: #fff0c8;
-      text-decoration: none;
-      background: rgba(215, 170, 85, .14);
-      box-shadow: 0 0 30px rgba(215, 170, 85, .25);
-    }
-
-    section {
-      max-width: 1100px;
-      margin: auto;
-      padding: 80px 18px;
-    }
-
-    .title {
-      text-align: center;
-      margin-bottom: 44px;
-    }
-
-    .title span {
-      color: #d7aa55;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-
-    .title h2 {
-      margin: 10px 0 0;
-      font-size: clamp(38px, 7vw, 72px);
-      font-weight: 400;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 26px;
-    }
-
-    .frame {
-      padding: 16px;
-      background: linear-gradient(135deg, #6f4716, #f0cd73, #7b501b, #ffeaaa, #8a5d20);
-      box-shadow:
-        inset 0 0 15px rgba(0,0,0,.55),
-        0 25px 70px rgba(0,0,0,.45);
-      transition: .25s;
-    }
-
-    .frame:hover {
-      transform: translateY(-6px) rotate(-.5deg);
-    }
-
-    .painting {
-      min-height: 260px;
-      padding: 28px;
-      color: #2a160d;
-      background:
-        linear-gradient(rgba(245, 225, 181, .9), rgba(245, 225, 181, .92)),
-        repeating-linear-gradient(45deg, rgba(90,50,20,.12) 0 1px, transparent 1px 9px);
-    }
-
-    .painting small {
-      color: #7b1d19;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-
-    .painting h3 {
-      font-size: 30px;
-      font-weight: 400;
-      margin: 16px 0;
-    }
-
-    .quiz-card {
-      max-width: 820px;
-      margin: auto;
-      padding: 34px;
-      border: 10px double #b98b3e;
-      background: linear-gradient(135deg, #f4e1b5, #caa25b);
-      color: #2a160d;
-      box-shadow: 0 30px 90px rgba(0,0,0,.55);
-    }
-
-    .progress {
-      height: 8px;
-      background: rgba(42,22,13,.18);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 22px 0;
-    }
-
-    .progress div {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #7b571f, #ffe39a, #b8822f);
-      transition: .3s;
-    }
-
-    .quiz-card h3 {
-      font-size: clamp(30px, 6vw, 52px);
-      font-weight: 400;
-      margin: 10px 0;
-    }
-
-    .meta {
-      color: #7b1d19;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-
-    .options {
-      display: grid;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .option, .next {
-      padding: 15px 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(42,22,13,.35);
-      background: rgba(255,244,214,.55);
-      color: #2a160d;
-      font-family: inherit;
-      font-size: 17px;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .option:hover {
-      background: rgba(255,244,214,.85);
-    }
-
-    .option.selected {
-      background: rgba(123,29,25,.15);
-      border-color: #7b1d19;
-    }
-
-    .reaction {
-      display: none;
-      margin-top: 20px;
-      padding: 16px;
-      border-left: 4px solid #7b1d19;
-      background: rgba(255,244,214,.45);
-    }
-
-    .reaction.show { display: block; }
-
-    .next {
-      display: none;
-      margin-top: 18px;
-      border-radius: 999px;
-      text-align: center;
-    }
-
-    .next.show { display: inline-block; }
-
-    .result {
-      display: none;
-      text-align: center;
-    }
-
-    .result.show { display: block; }
-
-    .result h3 {
-      font-size: clamp(42px, 8vw, 86px);
-      font-weight: 400;
-      margin: 10px 0;
-      background: linear-gradient(90deg, #8a5d20, #fff0ae, #c38a35);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    footer {
-      text-align: center;
-      padding: 90px 20px 120px;
-    }
-
-    footer h2 {
-      font-size: clamp(48px, 10vw, 100px);
-      font-weight: 400;
-      margin: 0;
-      background: linear-gradient(90deg, #8a5d20, #fff0ae, #c38a35);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    footer p {
-      max-width: 720px;
-      margin: 26px auto 0;
-      color: #f5dca8;
-      font-size: 22px;
-    }
-
-    .burst {
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ffe39a;
-      pointer-events: none;
-      animation: burst 900ms ease-out forwards;
-      z-index: 20;
-    }
-
-    @keyframes burst {
-      to {
-        transform: translate(var(--x), var(--y)) scale(0);
-        opacity: 0;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .hero { min-height: 92vh; padding: 80px 18px 40px; }
-      h1 { font-size: clamp(58px, 18vw, 92px); }
-      .hero p { font-size: 20px; }
-      section { padding: 62px 16px; }
-      .frame { padding: 12px; }
-      .painting { min-height: auto; padding: 22px; }
-      .quiz-card { padding: 24px 18px; border-width: 7px; }
-      .option, .next { width: 100%; font-size: 16px; }
-      .music { right: 12px; bottom: 12px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днём Рождения, Женя!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;600;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --gold: #D4A843;
+            --rose: #E85D75;
+            --teal: #2EC4B6;
+            --purple: #9B5DE5;
+            --coral: #F15BB5;
+            --yellow: #FEE440;
+            --dark: #1a1a2e;
+            --cream: #FFF8F0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        /* CONFETTI */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        /* MUSIC BUTTON */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose), var(--coral));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(232,93,117,0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(232,93,117,0.5);
+        }
+        
+        .music-btn.playing {
+            animation: music-pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes music-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark) 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(232,93,117,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(155,93,229,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(46,196,182,0.1) 0%, transparent 50%);
+            animation: pulse-glow 6s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            animation: hero-appear 1.5s ease-out;
+        }
+        
+        @keyframes hero-appear {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--rose), var(--coral));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 40px rgba(212,168,67,0.3);
+        }
+        
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--gold), var(--yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-style: italic;
+        }
+        
+        .hero-sub {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+        
+        .hero-date {
+            font-size: 1rem;
+            opacity: 0.7;
+            letter-spacing: 3px;
+        }
+        
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            animation: scroll-bounce 2s infinite;
+            font-size: 2rem;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        
+        @keyframes scroll-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(15px); }
+        }
+        
+        /* SECTIONS */
+        section {
+            padding: 5rem 1.5rem;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-sub {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* QUIZ CARDS */
+        .quiz-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+            border-color: var(--gold);
+        }
+        
+        .quiz-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--rose), var(--coral), var(--gold), var(--teal), var(--purple));
+        }
+        
+        .quiz-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--purple), var(--coral));
+            color: white;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(155,93,229,0.3);
+        }
+        
+        .quiz-question {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+        }
+        
+        .option {
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #e9ecef;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option:hover {
+            border-color: var(--teal);
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(46,196,182,0.15);
+        }
+        
+        .option::after {
+            content: '→';
+            position: absolute;
+            right: 1rem;
+            opacity: 0;
+            transition: all 0.2s;
+            color: var(--teal);
+        }
+        
+        .option:hover::after {
+            opacity: 1;
+            right: 0.75rem;
+        }
+        
+        .option.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.wrong {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .option.correct::after,
+        .option.wrong::after {
+            display: none;
+        }
+        
+        .reveal-btn {
+            margin-top: 1.5rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--gold), #f0c040);
+            color: var(--dark);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(212,168,67,0.3);
+        }
+        
+        .reveal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 24px rgba(212,168,67,0.4);
+        }
+        
+        .answer-reveal {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border-radius: 16px;
+            border-left: 4px solid var(--teal);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .answer-reveal.show {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .answer-reveal strong {
+            color: #2d5a2d;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* PROGRESS BAR */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        }
+        
+        .progress-bar {
+            max-width: 850px;
+            margin: 0 auto;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--rose), var(--coral), var(--gold));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        /* FUN FACTS */
+        .fun-facts {
+            background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
+            color: white;
+            padding: 5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fun-facts::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(232,93,117,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .fun-facts .section-title {
+            color: var(--gold);
+        }
+        
+        .fun-facts .section-sub {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .fact-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        
+        .fact-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(10px);
+        }
+        
+        .fact-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .fact-card p {
+            color: rgba(255,255,255,0.85);
+            line-height: 1.6;
+        }
+        
+        /* SURPRISE BOX */
+        .surprise-section {
+            padding: 6rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--rose) 0%, var(--coral) 50%, var(--gold) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .surprise-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .surprise-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: white;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        
+        .surprise-sub {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .gift-box-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        .gift-box {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        
+        .gift-box:hover {
+            transform: scale(1.05) rotateY(10deg);
+        }
+        
+        .gift-box.opened {
+            animation: gift-shake 0.5s ease-in-out;
+        }
+        
+        @keyframes gift-shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        
+        .gift-lid {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.5s;
+            z-index: 3;
+        }
+        
+        .gift-lid::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: var(--rose);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .gift-box.opened .gift-lid {
+            transform: translateY(-80px) rotateZ(-15deg);
+            opacity: 0;
+        }
+        
+        .gift-body {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .gift-ribbon {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--rose), var(--coral));
+        }
+        
+        .gift-ribbon-horizontal {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, var(--rose), var(--coral));
+        }
+        
+        .gift-text {
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+        
+        .surprise-content {
+            display: none;
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 24px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
+            animation: surprise-pop 0.6s ease-out;
+        }
+        
+        @keyframes surprise-pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .surprise-content.show {
+            display: block;
+        }
+        
+        .surprise-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .surprise-content p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .surprise-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .surprise-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: var(--purple);
+            border-left: 3px solid var(--gold);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 4rem 1.5rem;
+            background: var(--dark);
+            color: white;
+        }
+        
+        .footer h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--gold), var(--yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .footer p {
+            color: rgba(255,255,255,0.7);
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        
+        .signature {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            color: var(--coral);
+        }
+        
+        .footer-emoji {
+            font-size: 2rem;
+            margin: 1rem 0;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.5rem; }
+            .quiz-card { padding: 1.5rem; }
+            .gift-box { width: 140px; height: 140px; }
+            .gift-body { height: 100px; }
+            .music-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+        }
+    </style>
 </head>
-
 <body>
-  <audio id="music" src="music.mp3" loop></audio>
-  <button class="music" id="musicBtn">Музыка</button>
 
-  <header class="hero">
-    <div>
-      <div class="label">Закрытый просмотр · только для своих</div>
-      <h1>Музей Жени</h1>
-      <p>
-        Сегодня открыта выставка в честь человека, который умеет сделать искусство
-        понятным, смешным и немного опасным для равнодушия.
-      </p>
-      <a href="#paintings" class="btn">Войти в музей</a>
-    </div>
-  </header>
+    <!-- MUSIC BUTTON -->
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Включить музыку">🎵</button>
 
-  <section id="paintings">
-    <div class="title">
-      <span>Парадные залы</span>
-      <h2>Три экспоната</h2>
-    </div>
+    <!-- AUDIO -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
 
-    <div class="gallery">
-      <div class="frame">
-        <div class="painting">
-          <small>Экспонат I</small>
-          <h3>Женя и подпись к картине</h3>
-          <p>
-            Обычный человек проходит мимо. Женя читает, прищуривается —
-            и через минуту всем уже интересно, кто заказчик, где символ и почему это важно.
-          </p>
+    <!-- CONFETTI -->
+    <div class="confetti-container" id="confetti"></div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🎉 С Днём Рождения!</div>
+            <h1>Арт-квиз<br>для <span class="highlight">Жени П.</span></h1>
+            <p class="hero-sub">11 вопросов про искусство, которые знают только искусствоведы. Или те, кто с ними дружит.</p>
+            <div class="hero-date">9 июня 2026</div>
         </div>
-      </div>
+        <div class="scroll-hint" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">👇</div>
+    </div>
 
-      <div class="frame">
-        <div class="painting">
-          <small>Экспонат II</small>
-          <h3>Женя замечает деталь</h3>
-          <p>
-            Где-то в углу картины крошечная собака, странная тень или подозрительный фрукт.
-            Конечно, Женя уже всё увидела.
-          </p>
+    <!-- PROGRESS -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
         </div>
-      </div>
+    </div>
 
-      <div class="frame">
-        <div class="painting">
-          <small>Экспонат III</small>
-          <h3>Женя против скуки</h3>
-          <p>
-            Музей думал, что будет стоять тихо и серьёзно. Но пришла Женя —
-            и теперь даже древние вазы звучат как хороший сериал.
-          </p>
+    <!-- QUIZ -->
+    <section id="quiz">
+        <div class="section-header">
+            <span class="section-emoji">🎨</span>
+            <h2 class="section-title">Вопросы</h2>
+            <p class="section-sub">Выбирай ответ — потом нажми «Узнать правду»</p>
         </div>
-      </div>
+        
+        <div class="quiz-grid">
+
+            <!-- Q1 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">1</div>
+                <div class="quiz-question">Первый скульптор сотворил Венеру из… ?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🎂 Из пластилина, который ему подарили на день рождения</div>
+                    <div class="option" onclick="select(this, true)">🦣 Из бивня мамонта — потому что камень слишком твёрдый</div>
+                    <div class="option" onclick="select(this, false)">🎨 Из глины, но она потрескалась, и он сказал: «Это авангард»</div>
+                    <div class="option" onclick="select(this, false)">🍞 Из хлеба, чтобы потом съесть в голодный год</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Правильно!</strong>
+                    Венера Виллендорфская и другие статуэтки палеолита часто вырезались из бивня мамонта, кости, иногда из мягкого камня типа стеатита. Пластилин тогда ещё не изобрели.
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">2</div>
+                <div class="quiz-question">Почему греческие статуи сейчас белые, а раньше были как веселенькие?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">⏰ Потому что время — лучший ластик</div>
+                    <div class="option" onclick="select(this, true)">🎨 Они были раскрашены яркими красками, но краска облезла</div>
+                    <div class="option" onclick="select(this, false)">🤔 Скульпторы сначала раскрасили, но потом передумали, и отмыли их</div>
+                    <div class="option" onclick="select(this, false)">💰 Белый мрамор был дешевле цветного</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Бинго!</strong>
+                    Греки и римляне раскрашивали статуи в яркие цвета. Античность была гораздо пёстрее, чем мы думаем!
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">3</div>
+                <div class="quiz-question">Почему в византийских церквях золотой фон — это не просто «мне нравится блестяшка»?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🧛 Потому что золото отпугивает вампиров</div>
+                    <div class="option" onclick="select(this, true)">✨ Золото символизирует божественный свет, а не небо</div>
+                    <div class="option" onclick="select(this, false)">💵 Художники получали золото по весу, чем больше — тем богаче</div>
+                    <div class="option" onclick="select(this, false)">🕯️ Золото было единственным, что не выцветало при свечах</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Именно!</strong>
+                    Золотой фон — это не декорация, а теология: свет, исходящий от Бога, а не отражение реального неба. Хотя про вампиров тоже интересная версия.
+                </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">4</div>
+                <div class="quiz-question">Леонардо 16 лет носил «Мону Лизу» с собой и не отдавал заказчику. Это:</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">📱 Первый случай арт-букинга в истории</div>
+                    <div class="option" onclick="select(this, true)">🎨 Он считал картину незаконченной и постоянно подправлял</div>
+                    <div class="option" onclick="select(this, false)">📭 Заказчик не сказал свой адрес, а Леонардо не знал, куда отправлять</div>
+                    <div class="option" onclick="select(this, false)">🪞 Он просто захотел оставить ее себе. Такая она была красивая.</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 В точку!</strong>
+                    Да Винчи был перфекционистом и считал, что работа никогда не бывает окончательно завершена. Носил «Мону Лизу» до конца жизни — как любимую книгу, которую не хочешь отдавать.
+                </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">5</div>
+                <div class="quiz-question">Дюрер нарисовал кита, хотя никогда его не видел. Как?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">📖 Дюрер доказал: чтобы нарисовать кита, необязательно видеть кита. Иногда хватает уверенности в себе.</div>
+                    <div class="option" onclick="select(this, true)">🐋 Купил набросок у голландского моряка и дорисовал</div>
+                    <div class="option" onclick="select(this, false)">💤 Ему приснился кит, и он зарисовал сон</div>
+                    <div class="option" onclick="select(this, false)">🐬 Он нарисовал дельфина и подписал «кит» — никто не проверял</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Попал!</strong>
+                    Дюрер так хотел увидеть кита, что купил чужой набросок и сделал по нему знаменитую гравюру. Первый в истории коллаж? Возможно.
+                </div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">6</div>
+                <div class="quiz-question">Репин писал «Бурлаков на Волге» в Петербурге. Где он взял Волгу?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🖼️ Нарисовал на стене и сказал натурщикам: «Представьте»</div>
+                    <div class="option" onclick="select(this, true)">🏖️ Привёз волжский песок и разложил на берегу Невы</div>
+                    <div class="option" onclick="select(this, false)">🍾 Там же, где Дюрер взял кита.</div>
+                    <div class="option" onclick="select(this, false)">🏷️ Подписал «Волга», хотя это была Нева, и никто не заметил</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Да!</strong>
+                    Привёз песок с Волги, чтобы создать аутентичную поверхность для позирования. Настоящий продюсер — детали решают всё.
+                </div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">7</div>
+                <div class="quiz-question">Почему у импрессионистов всё размазано?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🚇 Они рисовали в метро, и всё тряслось</div>
+                    <div class="option" onclick="select(this, true)">👁️ Ловили мгновение — глаз видит пятна, мозг собирает картинку</div>
+                    <div class="option" onclick="select(this, false)">📅 После Дюрера с китом художники поняли: детали переоценены</div>
+                    <div class="option" onclick="select(this, false)">🙈 Они специально мазали, чтобы критики не придирались</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Точно!</strong>
+                    Импрессионисты писали быстро, ловя свет и цвет, а не детали. Размытость — это как видит глаз, а не камера. Они рисовали впечатление, а не инструкцию.
+                </div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">8</div>
+                <div class="quiz-question">Эшер рисовал так, что голова кругом идёт. Он сам не сходил с ума?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🌀 Сходил, но аккуратно, по спирали</div>
+                    <div class="option" onclick="select(this, true)">🧮 Нет, он был математиком в душе — для него это логические задачи</div>
+                    <div class="option" onclick="select(this, false)">🏥 Да, но психолог сказал: «Продолжайте, это терапия»</div>
+                    <div class="option" onclick="select(this, false)">😵 Он рисовал нормально, это зрители сходили с ума</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Верно!</strong>
+                    Эшер не считал себя художником, он «решал визуальные уравнения». Парадоксы для него — чистая математика. Хотя план с зрителями тоже хорош.
+                </div>
+            </div>
+
+            <!-- Q9 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">9</div>
+                <div class="quiz-question">Абстрактное искусство — это мазня? Ротко бы ответил:</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">💰 «Да, но очень дорогая мазня»</div>
+                    <div class="option" onclick="select(this, true)">🌈 «Нет, это портал в эмоции — подойди ближе, и ты уйдёшь в цвет»</div>
+                    <div class="option" onclick="select(this, false)">📐 «Мазня — это когда случайно. Я рисовал 20 слоёв, это стратегия»</div>
+                    <div class="option" onclick="select(this, false)">🐦 «После кита Дюрера и резкости импрессионистов меня уже ничем не обидеть»</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Все варианты хороши, но главное:</strong>
+                    Ротко считал, что его поля цвета вызывают глубокие эмоции, если смотреть вблизи и долго. А 20 слоёв краски — это работа, а не случайность. И да, его картины стоят миллионы, так что «дорогая мазня» тоже верно!
+                </div>
+            </div>
+
+            <!-- Q10 -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">10</div>
+                <div class="quiz-question">Облизывают ли художники кисточки?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🧔 Только после того, как кисточка первая облизала художника.</div>
+                    <div class="option" onclick="select(this, true)">⚠️ Нет, современные краски ядовиты, а раньше использовали слюну для пигментов</div>
+                    <div class="option" onclick="select(this, false)">🍵 Да, это художественный аналог проверки микрофона: «раз-два-три, кисть работает</div>
+                    <div class="option" onclick="select(this, false)">🎭 Облизывают, но не свои — это новый вид перформанса</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Финиш!</strong>
+                    В старину художники разводили краски слюной (ферменты помогают связке), но многие пигменты были ядовиты (свинец, мышьяк). Современные художники не облизывают — или делают это в последний раз. Дали, кстати, усы делал специально, не по вине красок.
+                </div>
+            </div>
+
+            <!-- Q11 - NEW! -->
+            <div class="quiz-card" data-answered="false">
+                <div class="quiz-number">11</div>
+                <div class="quiz-question">Кто рисует лучше — собаки или коты?</div>
+                <div class="quiz-options">
+                    <div class="option" onclick="select(this, false)">🐕 Собаки — они рисуют хвостом по песку, это land art</div>
+                    <div class="option" onclick="select(this, true)">🐈 Коты — они бегают по клавиатуре и создают генеративный арт</div>
+                    <div class="option" onclick="select(this, false)">🐕🐈 Они рисуют одинаково плохо, но критики всё равно найдут смысл</div>
+                    <div class="option" onclick="select(this, false)">🎨 Никто — они предпочитают инсталляции из шерсти и песка в лотке</div>
+                </div>
+                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
+                <div class="answer-reveal">
+                    <strong>🎯 Мяу!</strong>
+                    Коты действительно создают «генеративный арт», когда гуляют по клавиатуре — случайные комбинации символов, которые потом можно выставить как «постмодерн». Собаки предпочитают land art в саду. А самый известный «художник-животное» — китайская свинья Пигкассо, которая продаёт картины за тысячи долларов. Искусство бессмысленно без зрителя — даже если зритель пушистый!
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FUN FACTS -->
+    <div class="fun-facts">
+        <section>
+            <div class="section-header">
+                <span class="section-emoji">💡</span>
+                <h2 class="section-title">Бонус: факты для искусствоведа</h2>
+                <p class="section-sub">То, что знают только посвящённые</p>
+            </div>
+            
+            <div class="fact-card">
+                <h3>👶 Почему дети рисуют «хорошо», а взрослые «плохо»?</h3>
+                <p>Дети рисуют искренне, взрослые — боятся. Художник — тот, кто научился снова не бояться.</p>
+            </div>
+            
+            <div class="fact-card">
+                <h3>⬛ Что после «Чёрного квадрата»?</h3>
+                <p>Цветной квадрат, белый квадрат, или ничего. Малевич освободил искусство от предмета — и оно пошло искать новые формы.</p>
+            </div>
+            
+            <div class="fact-card">
+                <h3>🐦 Может ли искусство пугать голубей?</h3>
+                <p>Исследования показывают: птицы избегают нарисованных глаз хищников на фресках. А вот понимают ли они абстракцию — пока неизвестно.</p>
+            </div>
+            
+            <div class="fact-card">
+                <h3>🖼️ Зачем художник пишет картины и никому не показывает?</h3>
+                <p>Леонардо, Малевич, Ван Гог — многие шедевры увидели свет только после смерти автора. Иногда искусство нужно самому художнику больше, чем миру.</p>
+            </div>
+            
+            <div class="fact-card">
+                <h3>🐷 Пигкассо — настоящий художник?</h3>
+                <p>Китайская свинья из ЮАР рисует картины хвостом в пластиковом боксе. Её работы продаются за $3,000–$5,000. Критики говорят: «Это про хаос современного мира». Свинья, вероятно, просто ищет еду.</p>
+            </div>
+        </section>
     </div>
-  </section>
 
-  <section id="quiz">
-    <div class="title">
-      <span>Экзамен для экзаменатора</span>
-      <h2>Проверка по залам</h2>
+    <!-- SURPRISE BOX -->
+    <div class="surprise-section">
+        <div class="sparkle" style="top:20%;left:10%;animation-delay:0s;"></div>
+        <div class="sparkle" style="top:30%;right:15%;animation-delay:0.5s;"></div>
+        <div class="sparkle" style="top:60%;left:20%;animation-delay:1s;"></div>
+        <div class="sparkle" style="top:70%;right:10%;animation-delay:1.5s;"></div>
+        
+        <h2 class="surprise-title">🎁 А теперь — сюрприз!</h2>
+        <p class="surprise-sub">Нажми на коробку, чтобы узнать, что внутри</p>
+        
+        <div class="gift-box-container" onclick="openGift()">
+            <div class="gift-box" id="giftBox">
+                <div class="gift-lid"></div>
+                <div class="gift-body">
+                    <div class="gift-ribbon"></div>
+                    <div class="gift-ribbon-horizontal"></div>
+                    <div class="gift-text">🎁</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="surprise-content" id="surpriseContent">
+            <div class="surprise-emoji">🎨✨🥂</div>
+            <h3>С Днём Рождения, Женя!</h3>
+            <p>Ты знаешь искусство так глубоко, что даже эти абсурдные факты — для тебя очевидность.</p>
+            <div class="surprise-quote">
+                «Пусть твой взгляд всегда находит прекрасное там, где другие видят только трещины. И пусть каждый новый день приносит тебе хотя бы один момент, когда хочется сказать: «Вот это да!»»
+            </div>
+            <p>Спасибо, что делаешь мир чуть более понятным и гораздо более прекрасным.</p>
+        </div>
     </div>
 
-    <div class="quiz-card">
-      <div id="quizBox">
-        <div class="meta" id="meta"></div>
-        <div class="progress"><div id="progress"></div></div>
-        <h3 id="questionTitle"></h3>
-        <p id="questionText"></p>
-        <div class="options" id="options"></div>
-        <div class="reaction" id="reaction"></div>
-        <button class="next" id="nextBtn">Следующий зал</button>
-      </div>
-
-      <div class="result" id="result">
-        <div class="meta">Секретный зал открыт</div>
-        <h3>Женя — культурное достояние</h3>
-        <p>
-          Комиссия посовещалась с кураторами, реставраторами, смотрителями
-          и одним усталым призраком Возрождения.
-        </p>
-        <p>
-          Постановили: беречь, любить, чаще звать гулять и не спорить,
-          когда Женя говорит: «Сейчас объясню».
-        </p>
-      </div>
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-emoji">💖</div>
+        <h2>С Днём Рождения!</h2>
+        <p>Пусть твой год будет как хорошо настроенный оркестр — каждая нота на своём месте, а финал — овация.</p>
+        <div class="signature">С любовью и уважением к твоему искусствоведению</div>
     </div>
-  </section>
 
-  <footer>
-    <h2>С днём рождения, Женя</h2>
-    <p>
-      Пусть в новом году будет больше света, путешествий, выставок,
-      хороших разговоров и людей, с которыми красиво смотреть на мир.
-    </p>
-  </footer>
+    <script>
+        // Music
+        let musicPlaying = false;
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.classList.remove('playing');
+                musicPlaying = false;
+            } else {
+                bgMusic.play().catch(e => {
+                    // Fallback: try to play on next user interaction
+                    console.log('Music autoplay blocked, will try on interaction');
+                });
+                musicBtn.textContent = '🔊';
+                musicBtn.classList.add('playing');
+                musicPlaying = true;
+            }
+        }
+        
+        // Confetti
+        function createConfetti() {
+            const container = document.getElementById('confetti');
+            const colors = ['#E85D75', '#F15BB5', '#FEE440', '#2EC4B6', '#9B5DE5', '#D4A843', '#fff'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.width = (Math.random() * 8 + 4) + 'px';
+                confetti.style.height = (Math.random() * 8 + 4) + 'px';
+                container.appendChild(confetti);
+            }
+        }
+        createConfetti();
+        
+        // Quiz logic
+        let answeredCount = 0;
+        const totalQuestions = 11;
+        
+        function select(element, isCorrect) {
+            const card = element.closest('.quiz-card');
+            const options = card.querySelectorAll('.option');
+            
+            if (card.dataset.answered === 'true') return;
+            card.dataset.answered = 'true';
+            
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            answeredCount++;
+            updateProgress();
+        }
+        
+        function reveal(button) {
+            const reveal = button.nextElementSibling;
+            reveal.classList.add('show');
+            button.style.display = 'none';
+        }
+        
+        function updateProgress() {
+            const progress = (answeredCount / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        // Gift box
+        function openGift() {
+            const box = document.getElementById('giftBox');
+            const content = document.getElementById('surpriseContent');
+            
+            box.classList.add('opened');
+            
+            // Auto-play music on gift open if not playing
+            if (!musicPlaying) {
+                toggleMusic();
+            }
+            
+            // Extra confetti explosion
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.left = '50%';
+                confetti.style.top = '50%';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = ['#E85D75', '#F15BB5', '#FEE440', '#2EC4B6', '#9B5DE5'][Math.floor(Math.random()*5)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.zIndex = '9999';
+                confetti.style.pointerEvents = 'none';
+                document.body.appendChild(confetti);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 300 + 100;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+                
+                confetti.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 500,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                }).onfinish = () => confetti.remove();
+            }
+            
+            setTimeout(() => {
+                content.classList.add('show');
+                content.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 600);
+        }
+    </script>
 
-  <script>
-    const music = document.getElementById("music");
-    const musicBtn = document.getElementById("musicBtn");
-
-    music.volume = 0.35;
-
-    musicBtn.addEventListener("click", async () => {
-      if (music.paused) {
-        await music.play();
-        musicBtn.textContent = "Пауза";
-      } else {
-        music.pause();
-        musicBtn.textContent = "Музыка";
-      }
-    });
-
-    const questions = [
-      {
-        era: "Первобытное искусство",
-        title: "Пещера, бизон, ответственность",
-        text: "Что Женя первым делом сделала бы в пещере Ласко?",
-        options: [
-          "Нарисовала бизона",
-          "Оставила отпечаток ладони",
-          "Провела экскурсию",
-          "Повесила табличку «со вспышкой нельзя»"
-        ],
-        reaction: "Верно по духу. В любой эпохе сначала нужен контекст."
-      },
-      {
-        era: "Древний Египет",
-        title: "Профиль и вечность",
-        text: "Почему египтяне рисовали людей так, будто тело собрано по инструкции?",
-        options: [
-          "Таков канон",
-          "Фараону нравилось",
-          "Для вечности удобно",
-          "Чтобы Женя объясняла это детям ещё 5000 лет"
-        ],
-        reaction: "Последний вариант подозрительно убедителен."
-      },
-      {
-        era: "Античность",
-        title: "Грек в современном музее",
-        text: "Что больше всего удивило бы древнего грека?",
-        options: [
-          "Кондиционер",
-          "Цена билета",
-          "Очередь к статуе без рук",
-          "Что вазопись всё ещё обсуждают с таким жаром"
-        ],
-        reaction: "Античность кивает. Особенно вазопись."
-      },
-      {
-        era: "Средневековье",
-        title: "Золото и серьёзные лица",
-        text: "Перед Женей золотой фон и святой с выражением «я всё видел». Что дальше?",
-        options: [
-          "Она ищет символы",
-          "Она объясняет контекст",
-          "Она замечает деталь в углу",
-          "Все внезапно начинают слушать"
-        ],
-        reaction: "Опасность Жени в музее: после неё уже нельзя развидеть детали."
-      },
-      {
-        era: "Возрождение",
-        title: "Леонардо и дедлайны",
-        text: "Что сделал Леонардо, когда у него появилось свободное время?",
-        options: [
-          "Написал шедевр",
-          "Изобрёл что-нибудь",
-          "Начал новый проект",
-          "Не закончил предыдущие триста"
-        ],
-        reaction: "История искусства тяжело вздохнула и засчитала."
-      },
-      {
-        era: "Барокко",
-        title: "Драма, ткань, свет",
-        text: "На картине всё летит, сияет, страдает и падает в диагональ. Это…",
-        options: [
-          "Барокко",
-          "Очень барокко",
-          "Караваджо опять что-то устроил",
-          "Женя уже улыбается"
-        ],
-        reaction: "Драматический свет включён. Идём дальше."
-      },
-      {
-        era: "Импрессионизм",
-        title: "Стог сена, дубль двадцать семь",
-        text: "Моне снова пишет тот же стог. Что происходит?",
-        options: [
-          "Он изучает свет",
-          "Он проверяет терпение зрителя",
-          "Стог становится знаменитостью",
-          "Все ответы хороши"
-        ],
-        reaction: "Свет меняется, стог держится, Женя объясняет."
-      },
-      {
-        era: "Ротко",
-        title: "Два прямоугольника и бездна",
-        text: "Перед Женей огромное полотно с двумя прямоугольниками. Что дальше?",
-        options: [
-          "Кто-то говорит: «Я тоже так могу»",
-          "В комнате становится тише",
-          "Женя начинает объяснять",
-          "Всем неловко за первый вариант"
-        ],
-        reaction: "Ротко молчит. Комиссия тоже. Это часть опыта."
-      },
-      {
-        era: "Бэнкси",
-        title: "Стена нервничает",
-        text: "На стене появилось новое граффити Бэнкси. Что происходит первым?",
-        options: [
-          "Все фотографируют",
-          "Все спорят",
-          "Стена дорожает",
-          "Стену аккуратно готовят к аукциону"
-        ],
-        reaction: "Современное искусство снова сделало вид, что всё под контролем."
-      }
-    ];
-
-    const meta = document.getElementById("meta");
-    const title = document.getElementById("questionTitle");
-    const text = document.getElementById("questionText");
-    const options = document.getElementById("options");
-    const reaction = document.getElementById("reaction");
-    const nextBtn = document.getElementById("nextBtn");
-    const progress = document.getElementById("progress");
-    const quizBox = document.getElementById("quizBox");
-    const result = document.getElementById("result");
-
-    let current = 0;
-
-    function renderQuestion() {
-      const q = questions[current];
-
-      meta.textContent = q.era + " · вопрос " + (current + 1) + " из " + questions.length;
-      title.textContent = q.title;
-      text.textContent = q.text;
-      progress.style.width = (current / questions.length) * 100 + "%";
-
-      options.innerHTML = "";
-      reaction.classList.remove("show");
-      nextBtn.classList.remove("show");
-
-      q.options.forEach(optionText => {
-        const button = document.createElement("button");
-        button.className = "option";
-        button.textContent = optionText;
-
-        button.addEventListener("click", () => {
-          document.querySelectorAll(".option").forEach(btn => {
-            btn.disabled = true;
-            btn.classList.remove("selected");
-          });
-
-          button.classList.add("selected");
-          reaction.textContent = q.reaction;
-          reaction.classList.add("show");
-          nextBtn.textContent = current === questions.length - 1 ? "Открыть секретный зал" : "Следующий зал";
-          nextBtn.classList.add("show");
-        });
-
-        options.appendChild(button);
-      });
-    }
-
-    nextBtn.addEventListener("click", () => {
-      current++;
-
-      if (current >= questions.length) {
-        quizBox.style.display = "none";
-        result.classList.add("show");
-        makeBurst();
-      } else {
-        renderQuestion();
-      }
-    });
-
-    function makeBurst() {
-      for (let i = 0; i < 55; i++) {
-        const dot = document.createElement("span");
-        dot.className = "burst";
-
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 80 + Math.random() * 210;
-
-        dot.style.left = "50vw";
-        dot.style.top = "58vh";
-        dot.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
-        dot.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
-
-        document.body.appendChild(dot);
-        setTimeout(() => dot.remove(), 950);
-      }
-    }
-
-    renderQuestion();
-  </script>
 </body>
 </html>
