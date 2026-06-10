@@ -60,11 +60,6 @@
     }
     .mosaic-grid .mt {
       aspect-ratio:1; border-radius:4px;
-      animation:mt-pulse ease-in-out infinite;
-    }
-    @keyframes mt-pulse {
-      0%,100%{opacity:.85;transform:scale(1)}
-      50%{opacity:1;transform:scale(1.03)}
     }
 
     /* ─────────────────────────────────────────
@@ -111,7 +106,8 @@
     /* ─────────────────────────────────────────
        MUSIC
     ───────────────────────────────────────── */
-    #musicBtn{position:fixed;top:18px;right:18px;z-index:500;width:48px;height:48px;border-radius:50%;background:white;border:2px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.1);transition:border-color .2s,box-shadow .2s}
+    #musicBtn{position:fixed;top:18px;right:18px;z-index:10050;width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.1);transition:border-color .2s,box-shadow .2s;transform:translateZ(0);opacity:0;pointer-events:none;visibility:hidden}
+    #musicBtn.ready{opacity:1;pointer-events:auto;visibility:visible}
     #musicBtn:hover,#musicBtn.playing{border-color:var(--gold);box-shadow:0 4px 16px rgba(212,150,58,.3)}
     .mi{display:flex;align-items:flex-end;gap:2.5px;height:18px}
     .mi span{display:block;width:3.5px;border-radius:2px;background:var(--gold);transform-origin:bottom}
@@ -127,8 +123,7 @@
 
     /* floating mosaic tiles behind hero text */
     .hero-tiles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-    .ht{position:absolute;border-radius:5px;opacity:0;animation:ht-f ease-in-out infinite}
-    @keyframes ht-f{0%,100%{opacity:0;transform:rotate(45deg) scale(.7)}50%{opacity:.13;transform:rotate(45deg) scale(1)}}
+    .ht{position:absolute;border-radius:5px;opacity:.09;transform:rotate(45deg)}
 
     .hero-content{position:relative;z-index:2;animation:h-in 1.2s cubic-bezier(.22,1,.36,1) both}
     @keyframes h-in{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
@@ -155,7 +150,7 @@
     /* ─────────────────────────────────────────
        PROGRESS
     ───────────────────────────────────────── */
-    .progress-wrap{position:sticky;top:0;z-index:200;background:rgba(251,246,238,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .progress-wrap{position:sticky;top:0;z-index:200;background:var(--cream);border-bottom:1px solid var(--line)}
     .progress-wrap .ms{height:4px}
     .progress-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:1.25rem;padding:.8rem 1.5rem}
     .progress-label{font-size:.8rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
@@ -314,7 +309,11 @@
       .portrait-title{font-size:clamp(1.55rem,8vw,2.25rem);line-height:1.18}
       .progress-label{display:none}
     }
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation:none!important;transition:none!important}
+      .quiz-card,.reveal{opacity:1!important;transform:none!important}
+      .scroll-line{opacity:1;transform:scaleY(1)}
+    }
   </style>
 </head>
 <body>
@@ -705,7 +704,7 @@
   for(let i=0;i<36;i++){
     const t=document.createElement('div'); t.className='ht';
     const sz=22+Math.random()*55;
-    t.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${randColor()};animation-duration:${5+Math.random()*9}s;animation-delay:${Math.random()*9}s`;
+    t.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${randColor()}`;
     ht.appendChild(t);
   }
 
@@ -714,7 +713,7 @@
     const g=document.getElementById(id);
     for(let i=0;i<count;i++){
       const d=document.createElement('div'); d.className='mt';
-      d.style.cssText=`background:${randColor()};animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*5}s`;
+      d.style.cssText=`background:${randColor()}`;
       g.appendChild(d);
     }
   }
@@ -749,6 +748,7 @@
   function startQuiz(){
     userName=document.getElementById('nameInput').value.trim()||'Гость';
     document.getElementById('gate').classList.add('hidden');
+    document.getElementById('musicBtn').classList.add('ready');
   }
   document.getElementById('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter')startQuiz();});
 
