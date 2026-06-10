@@ -245,7 +245,7 @@
     .portrait-section{max-width:960px;margin:0 auto;padding:6rem 1.5rem;display:none}
     .portrait-section.show{display:block}
 
-    .portrait-card{border-radius:24px;overflow:hidden;box-shadow:0 8px 48px rgba(0,0,0,.12);animation:rise .9s cubic-bezier(.22,1,.36,1) both;border:1px solid var(--line)}
+    .portrait-card{border-radius:24px;overflow:visible;box-shadow:0 8px 48px rgba(0,0,0,.12);animation:rise .9s cubic-bezier(.22,1,.36,1) both;border:1px solid var(--line)}
     @keyframes rise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
 
     .portrait-head{padding:3rem;position:relative;overflow:hidden}
@@ -267,6 +267,11 @@
     .score-meta{line-height:1.5}
     .score-level-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--ink);margin-bottom:.25rem;font-style:italic}
     .score-level-label{font-size:.88rem;color:var(--muted);font-weight:300}
+    /* Fix: длинные названия уровня и имя в портрете не должны обрезаться */
+    .score-meta{min-width:0;flex:1}
+    .score-level-name{white-space:normal;overflow-wrap:anywhere;word-break:break-word}
+    .portrait-title{white-space:normal;overflow-wrap:anywhere;word-break:break-word}
+    .score-row{flex-wrap:wrap}
 
     .portrait-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--ink);line-height:1.8;margin-bottom:2rem;opacity:.85}
     .portrait-traits{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem}
@@ -304,6 +309,9 @@
       .portrait-head{padding:2rem}
       .portrait-body{padding:1.75rem}
       .score-row{flex-direction:column;align-items:flex-start;gap:1rem}
+      .score-meta{width:100%}
+      .score-level-name{font-size:1.3rem;line-height:1.25}
+      .portrait-title{font-size:clamp(1.55rem,8vw,2.25rem);line-height:1.18}
       .progress-label{display:none}
     }
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
