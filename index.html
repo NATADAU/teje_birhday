@@ -1,1185 +1,912 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>С Днём Рождения, Женя!</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;600;800&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --gold: #D4A843;
-            --rose: #E85D75;
-            --teal: #2EC4B6;
-            --purple: #9B5DE5;
-            --coral: #F15BB5;
-            --yellow: #FEE440;
-            --dark: #1a1a2e;
-            --cream: #FFF8F0;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--cream);
-            color: var(--dark);
-            overflow-x: hidden;
-        }
-        
-        /* CONFETTI */
-        .confetti-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
-        
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            animation: confetti-fall linear infinite;
-        }
-        
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        
-        /* MUSIC BUTTON */
-        .music-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 999;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--rose), var(--coral));
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(232,93,117,0.4);
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .music-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 24px rgba(232,93,117,0.5);
-        }
-        
-        .music-btn.playing {
-            animation: music-pulse 1s ease-in-out infinite;
-        }
-        
-        @keyframes music-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        /* HERO */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: linear-gradient(135deg, var(--dark) 0%, #16213e 50%, #0f3460 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(232,93,117,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(155,93,229,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(46,196,182,0.1) 0%, transparent 50%);
-            animation: pulse-glow 6s ease-in-out infinite;
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.1) rotate(5deg); }
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            padding: 2rem;
-            animation: hero-appear 1.5s ease-out;
-        }
-        
-        @keyframes hero-appear {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .hero-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--rose), var(--coral));
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .hero h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 10vw, 7rem);
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 40px rgba(212,168,67,0.3);
-        }
-        
-        .hero h1 .highlight {
-            background: linear-gradient(135deg, var(--gold), var(--yellow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-style: italic;
-        }
-        
-        .hero-sub {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 3rem;
-            line-height: 1.6;
-        }
-        
-        .hero-date {
-            font-size: 1rem;
-            opacity: 0.7;
-            letter-spacing: 3px;
-        }
-        
-        .scroll-hint {
-            position: absolute;
-            bottom: 2rem;
-            animation: scroll-bounce 2s infinite;
-            font-size: 2rem;
-            opacity: 0.6;
-            cursor: pointer;
-        }
-        
-        @keyframes scroll-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(15px); }
-        }
-        
-        /* SECTIONS */
-        section {
-            padding: 5rem 1.5rem;
-            max-width: 850px;
-            margin: 0 auto;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .section-emoji {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-        
-        .section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .section-sub {
-            color: #666;
-            font-size: 1.1rem;
-        }
-        
-        /* QUIZ CARDS */
-        .quiz-grid {
-            display: grid;
-            gap: 1.5rem;
-        }
-        
-        .quiz-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
-        }
-        
-        .quiz-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
-            border-color: var(--gold);
-        }
-        
-        .quiz-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--rose), var(--coral), var(--gold), var(--teal), var(--purple));
-        }
-        
-        .quiz-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--purple), var(--coral));
-            color: white;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 12px rgba(155,93,229,0.3);
-        }
-        
-        .quiz-question {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-            line-height: 1.3;
-        }
-        
-        .quiz-options {
-            display: grid;
-            gap: 0.75rem;
-        }
-        
-        .option {
-            padding: 1rem 1.25rem;
-            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid #e9ecef;
-            font-size: 0.95rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .option:hover {
-            border-color: var(--teal);
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(46,196,182,0.15);
-        }
-        
-        .option::after {
-            content: '→';
-            position: absolute;
-            right: 1rem;
-            opacity: 0;
-            transition: all 0.2s;
-            color: var(--teal);
-        }
-        
-        .option:hover::after {
-            opacity: 1;
-            right: 0.75rem;
-        }
-        
-        .option.correct {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-color: #28a745;
-            color: #155724;
-        }
-        
-        .option.wrong {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            border-color: #dc3545;
-            color: #721c24;
-        }
-        
-        .option.correct::after,
-        .option.wrong::after {
-            display: none;
-        }
-        
-        .reveal-btn {
-            margin-top: 1.5rem;
-            padding: 0.8rem 2rem;
-            background: linear-gradient(135deg, var(--gold), #f0c040);
-            color: var(--dark);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 16px rgba(212,168,67,0.3);
-        }
-        
-        .reveal-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 24px rgba(212,168,67,0.4);
-        }
-        
-        .answer-reveal {
-            display: none;
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-            border-radius: 16px;
-            border-left: 4px solid var(--teal);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-        
-        .answer-reveal.show {
-            display: block;
-            animation: slideUp 0.5s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .answer-reveal strong {
-            color: #2d5a2d;
-            font-size: 1.1rem;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        
-        /* PROGRESS BAR */
-        .progress-container {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: white;
-            padding: 1rem;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-        }
-        
-        .progress-bar {
-            max-width: 850px;
-            margin: 0 auto;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--rose), var(--coral), var(--gold));
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 4px;
-        }
-        
-        /* FUN FACTS */
-        .fun-facts {
-            background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
-            color: white;
-            padding: 5rem 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .fun-facts::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(232,93,117,0.2) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        
-        .fun-facts .section-title {
-            color: var(--gold);
-        }
-        
-        .fun-facts .section-sub {
-            color: rgba(255,255,255,0.7);
-        }
-        
-        .fact-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-        
-        .fact-card:hover {
-            background: rgba(255,255,255,0.08);
-            transform: translateX(10px);
-        }
-        
-        .fact-card h3 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--gold);
-            font-size: 1.4rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .fact-card p {
-            color: rgba(255,255,255,0.85);
-            line-height: 1.6;
-        }
-        
-        /* SURPRISE BOX */
-        .surprise-section {
-            padding: 6rem 1.5rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--rose) 0%, var(--coral) 50%, var(--gold) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .surprise-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        
-        .surprise-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            color: white;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 4px 16px rgba(0,0,0,0.2);
-        }
-        
-        .surprise-sub {
-            color: rgba(255,255,255,0.9);
-            font-size: 1.2rem;
-            margin-bottom: 3rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .gift-box-container {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            z-index: 2;
-        }
-        
-        .gift-box {
-            width: 180px;
-            height: 180px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-        }
-        
-        .gift-box:hover {
-            transform: scale(1.05) rotateY(10deg);
-        }
-        
-        .gift-box.opened {
-            animation: gift-shake 0.5s ease-in-out;
-        }
-        
-        @keyframes gift-shake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-        
-        .gift-lid {
-            width: 100%;
-            height: 40px;
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 8px 8px 0 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            transition: all 0.5s;
-            z-index: 3;
-        }
-        
-        .gift-lid::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            background: var(--rose);
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        
-        .gift-box.opened .gift-lid {
-            transform: translateY(-80px) rotateZ(-15deg);
-            opacity: 0;
-        }
-        
-        .gift-body {
-            width: 100%;
-            height: 140px;
-            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .gift-ribbon {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 100%;
-            background: linear-gradient(180deg, var(--rose), var(--coral));
-        }
-        
-        .gift-ribbon-horizontal {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(90deg, var(--rose), var(--coral));
-        }
-        
-        .gift-text {
-            font-size: 3rem;
-            opacity: 0.3;
-        }
-        
-        .surprise-content {
-            display: none;
-            margin-top: 3rem;
-            padding: 2.5rem;
-            background: white;
-            border-radius: 24px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 2;
-            animation: surprise-pop 0.6s ease-out;
-        }
-        
-        @keyframes surprise-pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        .surprise-content.show {
-            display: block;
-        }
-        
-        .surprise-content h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
-            color: var(--dark);
-            margin-bottom: 1rem;
-        }
-        
-        .surprise-content p {
-            color: #555;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-        
-        .surprise-emoji {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        .surprise-quote {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 1.3rem;
-            color: var(--purple);
-            border-left: 3px solid var(--gold);
-            padding-left: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        /* FOOTER */
-        .footer {
-            text-align: center;
-            padding: 4rem 1.5rem;
-            background: var(--dark);
-            color: white;
-        }
-        
-        .footer h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--gold), var(--yellow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .footer p {
-            color: rgba(255,255,255,0.7);
-            max-width: 500px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
-        }
-        
-        .signature {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 1.8rem;
-            color: var(--coral);
-        }
-        
-        .footer-emoji {
-            font-size: 2rem;
-            margin: 1rem 0;
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .sparkle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            animation: sparkle 2s ease-in-out infinite;
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-        
-        @media (max-width: 600px) {
-            .hero h1 { font-size: 2.5rem; }
-            .quiz-card { padding: 1.5rem; }
-            .gift-box { width: 140px; height: 140px; }
-            .gift-body { height: 100px; }
-            .music-btn { width: 40px; height: 40px; font-size: 1.2rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Арт-квиз для Жени</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream:  #FBF6EE;
+      --warm:   #F3EAD8;
+      --warm2:  #EDE0C4;
+      --ink:    #1E160A;
+      --muted:  #6A5A40;
+      --line:   rgba(30,22,10,.1);
+      --gold:   #D4963A;
+      --goldl:  #F0C060;
+      --amber:  #C47A1A;
+      --teal:   #2B8A8A;
+      --teall:  #4BBABA;
+      --cobalt: #2A4E8C;
+      --cobaltl:#4A78CC;
+      --rose:   #B83050;
+      --rosel:  #E05878;
+      --sage:   #4A7A50;
+      --sagel:  #72B07A;
+      --terra:  #C04828;
+      --terral: #E87050;
+      --violet: #6B2A8C;
+      --violetl:#A040D0;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; font-size:18px; }
+    body { font-family:'Inter',sans-serif; font-size:1rem; background:var(--cream); color:var(--ink); overflow-x:hidden; line-height:1.7; }
+
+    /* ─────────────────────────────────────────
+       MOSAIC STRIP  (reusable)
+    ───────────────────────────────────────── */
+    .ms { height:12px; width:100%; flex-shrink:0; }
+    .ms-a { background:linear-gradient(90deg,
+      var(--rose) 0 8.3%,var(--gold) 8.3% 16.6%,var(--teal) 16.6% 25%,
+      var(--cobalt) 25% 33.3%,var(--sage) 33.3% 41.6%,var(--terra) 41.6% 50%,
+      var(--rosel) 50% 58.3%,var(--goldl) 58.3% 66.6%,var(--teall) 66.6% 75%,
+      var(--cobaltl) 75% 83.3%,var(--amber) 83.3% 91.6%,var(--sagel) 91.6% 100%); }
+    .ms-b { background:linear-gradient(90deg,
+      var(--cobalt) 0 8.3%,var(--terral) 8.3% 16.6%,var(--goldl) 16.6% 25%,
+      var(--violet) 25% 33.3%,var(--teall) 33.3% 41.6%,var(--rosel) 41.6% 50%,
+      var(--sage) 50% 58.3%,var(--amber) 58.3% 66.6%,var(--cobaltl) 66.6% 75%,
+      var(--rose) 75% 83.3%,var(--gold) 83.3% 91.6%,var(--violetl) 91.6% 100%); }
+    .ms-thin { height:5px; }
+
+    /* ─────────────────────────────────────────
+       MOSAIC TILE GRID  (decorative blocks)
+    ───────────────────────────────────────── */
+    .mosaic-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(48px,1fr));
+      gap:3px; padding:3px;
+    }
+    .mosaic-grid .mt {
+      aspect-ratio:1; border-radius:4px;
+      animation:mt-pulse ease-in-out infinite;
+    }
+    @keyframes mt-pulse {
+      0%,100%{opacity:.85;transform:scale(1)}
+      50%{opacity:1;transform:scale(1.03)}
+    }
+
+    /* ─────────────────────────────────────────
+       GATE
+    ───────────────────────────────────────── */
+    #gate {
+      position:fixed; inset:0; z-index:9999;
+      background:var(--cream);
+      display:flex; flex-direction:column;
+      transition:opacity .7s ease, visibility .7s ease;
+    }
+    #gate.hidden{opacity:0;visibility:hidden;pointer-events:none}
+
+    .gate-top { height:16px; background:linear-gradient(90deg,
+      var(--rose) 0 7%,var(--gold) 7% 14%,var(--teal) 14% 21%,var(--cobalt) 21% 28%,
+      var(--violet) 28% 35%,var(--terra) 35% 42%,var(--rosel) 42% 49%,var(--goldl) 49% 56%,
+      var(--teall) 56% 63%,var(--cobaltl) 63% 70%,var(--amber) 70% 77%,var(--sagel) 77% 84%,
+      var(--violetl) 84% 91%,var(--terral) 91% 100%); }
+
+    .gate-body{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem}
+    .gate-inner{text-align:center;max-width:460px;width:100%;animation:gate-in .9s cubic-bezier(.22,1,.36,1) both}
+    @keyframes gate-in{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+    /* gem row */
+    .gate-gems{display:flex;justify-content:center;align-items:center;gap:6px;margin-bottom:2.5rem}
+    .gg{width:16px;height:16px;border-radius:3px;transform:rotate(45deg)}
+    .gg:nth-child(1){background:var(--rose);width:12px;height:12px}
+    .gg:nth-child(2){background:var(--gold);width:20px;height:20px;box-shadow:0 0 12px rgba(212,150,58,.5)}
+    .gg:nth-child(3){background:var(--teal);width:12px;height:12px}
+    .gg:nth-child(4){background:var(--cobalt);width:20px;height:20px}
+    .gg:nth-child(5){background:var(--violet);width:12px;height:12px}
+    .gg:nth-child(6){background:var(--terra);width:20px;height:20px;box-shadow:0 0 12px rgba(192,72,40,.5)}
+    .gg:nth-child(7){background:var(--sage);width:12px;height:12px}
+
+    .gate-label{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,2.8rem);font-weight:700;font-style:italic;color:var(--ink);line-height:1.2;margin-bottom:.5rem}
+    .gate-sub{font-size:1rem;color:var(--muted);margin-bottom:2.5rem;font-weight:300}
+    .gate-input{width:100%;padding:1.1rem 1.5rem;border:2px solid var(--line);background:white;border-radius:16px;font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--ink);outline:none;text-align:center;transition:border-color .2s,box-shadow .2s}
+    .gate-input::placeholder{color:rgba(30,22,10,.3)}
+    .gate-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,150,58,.12)}
+    .gate-btn{margin-top:1.1rem;width:100%;padding:1.1rem;background:linear-gradient(135deg,var(--amber),var(--gold),var(--goldl));color:white;border:none;border-radius:16px;font-weight:700;font-size:1rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 20px rgba(212,150,58,.4);transition:transform .2s,box-shadow .2s}
+    .gate-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,150,58,.5)}
+
+
+    /* ─────────────────────────────────────────
+       MUSIC
+    ───────────────────────────────────────── */
+    #musicBtn{position:fixed;top:18px;right:18px;z-index:500;width:48px;height:48px;border-radius:50%;background:white;border:2px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.1);transition:border-color .2s,box-shadow .2s}
+    #musicBtn:hover,#musicBtn.playing{border-color:var(--gold);box-shadow:0 4px 16px rgba(212,150,58,.3)}
+    .mi{display:flex;align-items:flex-end;gap:2.5px;height:18px}
+    .mi span{display:block;width:3.5px;border-radius:2px;background:var(--gold);transform-origin:bottom}
+    .mi span:nth-child(1){height:8px}.mi span:nth-child(2){height:15px}.mi span:nth-child(3){height:6px}.mi span:nth-child(4){height:11px}
+    #musicBtn.playing .mi span{animation:bar .65s ease-in-out infinite alternate}
+    #musicBtn.playing .mi span:nth-child(2){animation-delay:.1s}#musicBtn.playing .mi span:nth-child(3){animation-delay:.2s}#musicBtn.playing .mi span:nth-child(4){animation-delay:.12s}
+    @keyframes bar{from{transform:scaleY(1)}to{transform:scaleY(.25)}}
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    .hero{min-height:100svh;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.5rem 5rem;background:var(--warm)}
+
+    /* floating mosaic tiles behind hero text */
+    .hero-tiles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .ht{position:absolute;border-radius:5px;opacity:0;animation:ht-f ease-in-out infinite}
+    @keyframes ht-f{0%,100%{opacity:0;transform:rotate(45deg) scale(.7)}50%{opacity:.13;transform:rotate(45deg) scale(1)}}
+
+    .hero-content{position:relative;z-index:2;animation:h-in 1.2s cubic-bezier(.22,1,.36,1) both}
+    @keyframes h-in{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
+
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:.75rem;font-size:.85rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:2rem}
+    .hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:24px;height:2px;background:var(--gold);opacity:.5}
+
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,12vw,8.5rem);font-weight:700;line-height:.92;letter-spacing:-.02em;color:var(--ink);margin-bottom:1.75rem}
+    .hero-title em{font-style:italic;background:linear-gradient(135deg,var(--amber),var(--gold),var(--goldl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+    .hero-lead{font-size:clamp(1rem,2.5vw,1.2rem);color:var(--muted);max-width:540px;margin:0 auto 2.5rem;font-weight:300;line-height:1.75}
+    .hero-date{font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);opacity:.6}
+
+    .hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.6rem;cursor:pointer;color:var(--muted);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;z-index:2;transition:color .2s}
+    .hero-scroll:hover{color:var(--amber)}
+    .scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,transparent,var(--gold));animation:sl 2.2s ease-in-out infinite}
+    @keyframes sl{0%{transform:scaleY(0);transform-origin:top;opacity:0}50%{transform:scaleY(1);transform-origin:top;opacity:1}100%{transform:scaleY(0);transform-origin:bottom;opacity:0}}
+
+    /* ─────────────────────────────────────────
+       MOSAIC INTERLUDE BAND
+    ───────────────────────────────────────── */
+    .mosaic-band{padding:20px 0;background:var(--warm2)}
+
+    /* ─────────────────────────────────────────
+       PROGRESS
+    ───────────────────────────────────────── */
+    .progress-wrap{position:sticky;top:0;z-index:200;background:rgba(251,246,238,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .progress-wrap .ms{height:4px}
+    .progress-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:1.25rem;padding:.8rem 1.5rem}
+    .progress-label{font-size:.8rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+    .progress-track{flex:1;height:6px;background:var(--warm2);border-radius:4px;overflow:hidden}
+    .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--violet),var(--rose),var(--amber),var(--gold),var(--teal));border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+    .progress-count{font-size:.82rem;font-weight:700;color:var(--amber);letter-spacing:.06em;white-space:nowrap}
+
+    /* ─────────────────────────────────────────
+       SECTION SHARED
+    ───────────────────────────────────────── */
+    .sec-header{text-align:center;margin-bottom:3.5rem}
+    .sec-eyebrow{display:block;font-size:.82rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:.75rem}
+    .sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}
+    .sec-sub{font-size:1.05rem;color:var(--muted);font-weight:300;line-height:1.6}
+    .orn{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:1.5rem}
+    .orn-line{width:48px;height:1px}
+    .orn-line:first-child{background:linear-gradient(90deg,transparent,var(--gold))}
+    .orn-line:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+    .orn-gem{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 8px rgba(212,150,58,.5)}
+
+    /* ─────────────────────────────────────────
+       QUIZ
+    ───────────────────────────────────────── */
+    .quiz-section{max-width:960px;margin:0 auto;padding:5rem 1.5rem 7rem}
+    .quiz-grid{display:grid;gap:2rem}
+
+    .quiz-card{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+    .quiz-card.visible{opacity:1;transform:translateY(0)}
+
+    .card-scene{perspective:1400px}
+    .card-flipper{position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.4,0,.2,1)}
+    .card-flipper.flipped{transform:rotateY(180deg)}
+
+    .card-front,.card-back{border-radius:20px;padding:2.5rem;width:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+    .card-front{background:white;border:1px solid var(--line);box-shadow:0 4px 24px rgba(0,0,0,.07);position:relative;overflow:hidden}
+
+    /* thick top strip per card */
+    .card-front::before{content:'';position:absolute;top:0;left:0;right:0;height:7px}
+    .quiz-card[data-q="1"]  .card-front::before{background:linear-gradient(90deg,var(--rose),var(--gold),var(--rosel))}
+    .quiz-card[data-q="2"]  .card-front::before{background:linear-gradient(90deg,var(--teal),var(--cobalt),var(--teall))}
+    .quiz-card[data-q="3"]  .card-front::before{background:linear-gradient(90deg,var(--gold),var(--amber),var(--goldl))}
+    .quiz-card[data-q="4"]  .card-front::before{background:linear-gradient(90deg,var(--cobalt),var(--violet),var(--cobaltl))}
+    .quiz-card[data-q="5"]  .card-front::before{background:linear-gradient(90deg,var(--sage),var(--teal),var(--teall))}
+    .quiz-card[data-q="6"]  .card-front::before{background:linear-gradient(90deg,var(--terra),var(--rose),var(--terral))}
+    .quiz-card[data-q="7"]  .card-front::before{background:linear-gradient(90deg,var(--cobaltl),var(--cobalt),var(--violet))}
+    .quiz-card[data-q="8"]  .card-front::before{background:linear-gradient(90deg,var(--violet),var(--rosel),var(--rose))}
+    .quiz-card[data-q="9"]  .card-front::before{background:linear-gradient(90deg,var(--gold),var(--goldl),var(--amber))}
+    .quiz-card[data-q="10"] .card-front::before{background:linear-gradient(90deg,var(--sage),var(--sagel),var(--teal))}
+    .quiz-card[data-q="11"] .card-front::before{background:linear-gradient(90deg,var(--terral),var(--goldl),var(--rosel))}
+
+    /* mosaic corner on card */
+    .card-corner{position:absolute;bottom:0;right:0;display:grid;grid-template-columns:repeat(3,18px);grid-template-rows:repeat(3,18px);gap:2px;padding:2px;opacity:.15;pointer-events:none}
+    .cc{border-radius:3px}
+
+    .q-badge{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;font-size:.82rem;font-weight:800;color:white;margin-bottom:1.1rem}
+    .quiz-card[data-q="1"]  .q-badge{background:var(--rose)}
+    .quiz-card[data-q="2"]  .q-badge{background:var(--teal)}
+    .quiz-card[data-q="3"]  .q-badge{background:var(--gold)}
+    .quiz-card[data-q="4"]  .q-badge{background:var(--cobalt)}
+    .quiz-card[data-q="5"]  .q-badge{background:var(--sage)}
+    .quiz-card[data-q="6"]  .q-badge{background:var(--terra)}
+    .quiz-card[data-q="7"]  .q-badge{background:var(--cobaltl)}
+    .quiz-card[data-q="8"]  .q-badge{background:var(--violet)}
+    .quiz-card[data-q="9"]  .q-badge{background:var(--amber)}
+    .quiz-card[data-q="10"] .q-badge{background:var(--sage)}
+    .quiz-card[data-q="11"] .q-badge{background:var(--terral)}
+
+    .q-text{font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,3vw,1.55rem);font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:1.75rem}
+
+    .options{display:grid;gap:.65rem}
+    .opt{padding:1rem 1.3rem;border:1.5px solid rgba(30,22,10,.1);border-radius:12px;cursor:pointer;font-size:.97rem;color:var(--muted);background:var(--cream);text-align:left;font-family:'Inter',sans-serif;line-height:1.5;transition:border-color .2s,background .2s,transform .18s,color .2s}
+    .opt:hover:not([disabled]){border-color:var(--gold);background:rgba(212,150,58,.07);transform:translateX(5px);color:var(--ink)}
+    .opt.selected{border-color:var(--amber);background:rgba(212,150,58,.1);color:var(--ink);font-weight:500}
+    .opt[disabled]{cursor:default;pointer-events:none}
+
+    .card-back{position:absolute;top:0;left:0;transform:rotateY(180deg);background:var(--warm);border:1px solid rgba(212,150,58,.25);box-shadow:0 4px 24px rgba(0,0,0,.07)}
+    .back-label{font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:.85rem}
+    .back-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--ink);line-height:1.35;margin-bottom:.75rem}
+    .back-div{width:44px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--teal),var(--violet));margin:.85rem 0}
+    .back-body{font-size:.97rem;color:var(--muted);line-height:1.75;font-weight:300}
+    .back-btn{margin-top:1.5rem;background:white;border:1.5px solid var(--line);border-radius:8px;padding:.6rem 1.2rem;font-size:.88rem;color:var(--muted);cursor:pointer;transition:border-color .2s,color .2s;font-family:'Inter',sans-serif}
+    .back-btn:hover{border-color:var(--gold);color:var(--amber)}
+
+    /* ─────────────────────────────────────────
+       PORTRAIT
+    ───────────────────────────────────────── */
+    .portrait-section{max-width:960px;margin:0 auto;padding:6rem 1.5rem;display:none}
+    .portrait-section.show{display:block}
+
+    .portrait-card{border-radius:24px;overflow:hidden;box-shadow:0 8px 48px rgba(0,0,0,.12);animation:rise .9s cubic-bezier(.22,1,.36,1) both;border:1px solid var(--line)}
+    @keyframes rise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+
+    .portrait-head{padding:3rem;position:relative;overflow:hidden}
+    .portrait-mosaic-corner{position:absolute;top:-24px;right:-24px;display:grid;grid-template-columns:repeat(5,28px);grid-template-rows:repeat(5,28px);gap:3px;transform:rotate(15deg);opacity:.22;pointer-events:none}
+    .pm{border-radius:4px}
+    .portrait-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)}
+
+    .portrait-eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.8);display:block;margin-bottom:1rem;position:relative;z-index:1}
+    .portrait-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;color:white;line-height:1.15;position:relative;z-index:1;text-shadow:0 2px 12px rgba(0,0,0,.2)}
+    .portrait-title em{font-style:italic;color:var(--goldl)}
+
+    .portrait-body{padding:2.5rem 3rem;background:white}
+    @media(max-width:600px){.portrait-body{padding:1.75rem}}
+
+    .score-row{display:flex;align-items:center;gap:1.5rem;margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--line)}
+    .score-badge{flex-shrink:0;width:96px;height:96px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.15)}
+    .score-num{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:700;color:white;line-height:1}
+    .score-of{font-size:.7rem;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.75);text-transform:uppercase}
+    .score-meta{line-height:1.5}
+    .score-level-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--ink);margin-bottom:.25rem;font-style:italic}
+    .score-level-label{font-size:.88rem;color:var(--muted);font-weight:300}
+
+    .portrait-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--ink);line-height:1.8;margin-bottom:2rem;opacity:.85}
+    .portrait-traits{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem}
+    .trait{padding:.45rem 1.1rem;border-radius:4px;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:white}
+    .portrait-closing{font-size:.97rem;color:var(--muted);line-height:1.75;padding-top:2rem;border-top:1px solid var(--line);font-weight:300}
+    .zhenya-tip{display:inline-block;margin-top:1rem;padding:.9rem 1.2rem;background:rgba(212,150,58,.08);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;font-style:italic;color:var(--muted);line-height:1.6}
+    .zhenya-tip strong{color:var(--amber);font-style:normal;font-weight:700}
+
+    .recs{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--line)}
+    .recs-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:1.25rem}
+    .recs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+    .rec-card{border-radius:14px;padding:1.25rem 1.4rem;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+    .rec-card:hover{transform:translateY(-4px);box-shadow:0 10px 32px rgba(0,0,0,.1)}
+    .rec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+    .rec-icon{font-size:1.6rem;margin-bottom:.6rem;display:block}
+    .rec-label{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
+    .rec-text{font-size:.9rem;line-height:1.55;font-weight:300}
+    .zhenya-tip strong{color:var(--amber);font-style:normal;font-weight:700}
+
+    /* ─────────────────────────────────────────
+       FOOTER — warm light
+    ───────────────────────────────────────── */
+    .footer{text-align:center;padding:5rem 1.5rem 4rem;background:var(--warm);border-top:1px solid var(--line)}
+    .footer-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,7vw,4rem);font-weight:700;font-style:italic;color:var(--amber);margin-bottom:1.25rem}
+    .footer-text{font-size:1rem;color:var(--muted);max-width:500px;margin:0 auto 2.5rem;line-height:1.85;font-weight:300}
+    .footer-rule{width:1px;height:52px;background:linear-gradient(to bottom,rgba(212,150,58,.5),transparent);margin:0 auto 2rem}
+    .footer-sig{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.7rem;color:var(--rose)}
+
+    /* utils */
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.in-view{opacity:1;transform:translateY(0)}
+
+    @media(max-width:600px){
+      .card-front,.card-back{padding:1.75rem}
+      .portrait-head{padding:2rem}
+      .portrait-body{padding:1.75rem}
+      .score-row{flex-direction:column;align-items:flex-start;gap:1rem}
+      .progress-label{display:none}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
 </head>
 <body>
 
-    <!-- MUSIC BUTTON -->
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Включить музыку">🎵</button>
-
-    <!-- AUDIO -->
-    <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- CONFETTI -->
-    <div class="confetti-container" id="confetti"></div>
-
-    <!-- HERO -->
-    <div class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">🎉 С Днём Рождения!</div>
-            <h1>Арт-квиз<br>для <span class="highlight">Жени</span></h1>
-            <p class="hero-sub">11 вопросов про искусство,ответы на которые знают только искусствоведы, Женя. Или те, кто с ней дружит.</p>
-            <div class="hero-date">10 июня 2026</div>
-        </div>
-        <div class="scroll-hint" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">👇</div>
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-top"></div>
+  <div class="gate-body">
+    <div class="gate-inner">
+      <div class="gate-gems">
+        <div class="gg"></div><div class="gg"></div><div class="gg"></div>
+        <div class="gg"></div><div class="gg"></div><div class="gg"></div><div class="gg"></div>
+      </div>
+      <p class="gate-label">Прежде чем начать...</p>
+      <p class="gate-sub">Введи своё имя — оно появится в твоём портрете</p>
+      <input class="gate-input" id="nameInput" type="text" placeholder="Твоё имя" maxlength="40" autocomplete="off" spellcheck="false">
+      <button class="gate-btn" onclick="startQuiz()">Войти в квиз</button>
     </div>
-
-    <!-- PROGRESS -->
-    <div class="progress-container">
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-    </div>
-
-    <!-- QUIZ -->
-    <section id="quiz">
-        <div class="section-header">
-            <span class="section-emoji">🎨</span>
-            <h2 class="section-title">Вопросы</h2>
-            <p class="section-sub">Выбирай ответ — потом нажми «Узнать правду»</p>
-        </div>
-        
-        <div class="quiz-grid">
-
-            <!-- Q1 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">1</div>
-                <div class="quiz-question">Первый скульптор сотворил Венеру из… ?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🎂 Из пластилина, который ему подарили на день рождения</div>
-                    <div class="option" onclick="select(this, true)">🦣 Из бивня мамонта — потому что камень слишком твёрдый</div>
-                    <div class="option" onclick="select(this, false)">🎨 Из глины, но она потрескалась, и он сказал: «Это авангард»</div>
-                    <div class="option" onclick="select(this, false)">🍞 Из хлеба, чтобы потом съесть в голодный год</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Правильно!</strong>
-                    Венера Виллендорфская и другие статуэтки палеолита часто вырезались из бивня мамонта, кости, иногда из мягкого камня типа стеатита. Пластилин тогда ещё не изобрели.
-                </div>
-            </div>
-
-            <!-- Q2 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">2</div>
-                <div class="quiz-question">Почему греческие статуи сейчас белые, а раньше были такие «веселенькие»?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">⏰ Потому что время — лучший ластик</div>
-                    <div class="option" onclick="select(this, true)">🎨 Они были раскрашены яркими красками, но краска облезла</div>
-                    <div class="option" onclick="select(this, false)">🤔 Скульпторы сначала раскрасили, но потом передумали, и отмыли их</div>
-                    <div class="option" onclick="select(this, false)">💰 Белый мрамор был дешевле цветного</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Бинго!</strong>
-                    Греки и римляне раскрашивали статуи в яркие цвета. Античность была гораздо пёстрее, чем мы думаем!
-                </div>
-            </div>
-
-            <!-- Q3 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">3</div>
-                <div class="quiz-question">Почему в византийских церквях золотой фон — это не просто «мне нравится блестяшка»?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🧛 Потому что золото отпугивает вампиров</div>
-                    <div class="option" onclick="select(this, true)">✨ Золото символизирует божественный свет, а не небо</div>
-                    <div class="option" onclick="select(this, false)">💵 Художники получали золото по весу, чем больше — тем богаче</div>
-                    <div class="option" onclick="select(this, false)">🕯️ Золото было единственным, что не выцветало при свечах</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Именно!</strong>
-                    Золотой фон — это не декорация, а теология: свет, исходящий от Бога, а не отражение реального неба. Хотя про вампиров тоже интересная версия.
-                </div>
-            </div>
-
-            <!-- Q4 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">4</div>
-                <div class="quiz-question">Леонардо 16 лет носил «Мону Лизу» с собой и не отдавал заказчику. Это:</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">📱 Первый случай арт-букинга в истории</div>
-                    <div class="option" onclick="select(this, true)">🎨 Он считал картину незаконченной и постоянно подправлял</div>
-                    <div class="option" onclick="select(this, false)">📭 Заказчик не сказал свой адрес, а Леонардо не знал, куда отправлять</div>
-                    <div class="option" onclick="select(this, false)">🪞 Он просто захотел оставить ее себе. Такая она была красивая.</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 В точку!</strong>
-                    Леонардо да Винчи был перфекционистом и считал, что работа никогда не бывает окончательно завершена. Носил «Мону Лизу» до конца жизни — как любимую книгу, которую не хочешь отдавать.
-                </div>
-            </div>
-
-            <!-- Q5 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">5</div>
-                <div class="quiz-question">Дюрер нарисовал кита, хотя никогда его не видел. Как?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">📖 Дюрер доказал: чтобы нарисовать кита, необязательно видеть кита. Иногда хватает уверенности в себе.</div>
-                    <div class="option" onclick="select(this, true)">🐋 Купил набросок у голландского моряка и дорисовал</div>
-                    <div class="option" onclick="select(this, false)">💤 Ему приснился кит, и он зарисовал сон</div>
-                    <div class="option" onclick="select(this, false)">🐬 Он нарисовал дельфина и подписал «кит» — никто не проверял</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Попал!</strong>
-                    Дюрер так хотел увидеть кита, что купил чужой набросок и сделал по нему знаменитую гравюру.
-                </div>
-            </div>
-
-            <!-- Q6 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">6</div>
-                <div class="quiz-question">Репин писал «Бурлаков на Волге» в Петербурге. Где он взял Волгу?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🖼️ Нарисовал на стене и сказал натурщикам: «Представьте...»</div>
-                    <div class="option" onclick="select(this, true)">🏖️ Привёз волжский песок и разложил на берегу Невы</div>
-                    <div class="option" onclick="select(this, false)">🍾 Там же, где Дюрер взял кита.</div>
-                    <div class="option" onclick="select(this, false)">🏷️ Подписал «Волга», хотя это была Нева, и никто не заметил</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Да!</strong>
-                    Привёз песок с Волги, чтобы создать аутентичную поверхность для позирования. Настоящий продюсер — детали решают всё.
-                </div>
-            </div>
-
-            <!-- Q7 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">7</div>
-                <div class="quiz-question">Почему у импрессионистов всё размазано?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🚇 Они рисовали в метро, и всё тряслось</div>
-                    <div class="option" onclick="select(this, true)">👁️ Ловили мгновение — глаз видит пятна, мозг собирает картинку</div>
-                    <div class="option" onclick="select(this, false)">📅 После Дюрера с китом художники поняли: детали переоценены</div>
-                    <div class="option" onclick="select(this, false)">🙈 Они специально мазали, чтобы критики не придирались</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Точно!</strong>
-                    Импрессионисты писали быстро, ловя свет и цвет, а не детали. Размытость — это как видит глаз, а не камера. Они рисовали впечатление, а не инструкцию.
-                </div>
-            </div>
-
-            <!-- Q8 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">8</div>
-                <div class="quiz-question">Эшер рисовал так, что голова кругом идёт. Он сам не сходил с ума?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🌀 Сходил, но аккуратно, по спирали</div>
-                    <div class="option" onclick="select(this, true)">🧮 Нет, он был математиком в душе — для него это логические задачи</div>
-                    <div class="option" onclick="select(this, false)">🏥 Да, но психолог сказал: «Продолжайте, это терапия»</div>
-                    <div class="option" onclick="select(this, false)">😵 После попытки понять, откуда взялся кит Дюрера, зрители были готовы ко всему.</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Верно!</strong>
-                    Эшер не считал себя художником, он «решал визуальные уравнения». Парадоксы для него — чистая математика. Хотя план с зрителями тоже хорош.
-                </div>
-            </div>
-
-            <!-- Q9 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">9</div>
-                <div class="quiz-question">Абстрактное искусство — это мазня? Ротко бы ответил:</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">💰 «Да, но очень дорогая мазня»</div>
-                    <div class="option" onclick="select(this, true)">🌈 «Нет, это портал в эмоции — подойди ближе, и ты уйдёшь в цвет»</div>
-                    <div class="option" onclick="select(this, false)">📐 «Мазня — это когда случайно. Я рисовал 20 слоёв, это стратегия»</div>
-                    <div class="option" onclick="select(this, false)">🐦 «После кита Дюрера и резкости импрессионистов меня уже ничем не обидеть»</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Все варианты хороши, но главное:</strong>
-                    Ротко считал, что его поля цвета вызывают глубокие эмоции, если смотреть вблизи и долго. А 20 слоёв краски — это работа, а не случайность. И да, его картины стоят миллионы, так что «дорогая мазня» тоже верно!
-                </div>
-            </div>
-
-            <!-- Q10 -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">10</div>
-                <div class="quiz-question">Облизывают ли художники кисточки?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🧔 Только после того, как кисточка первая облизала художника.</div>
-                    <div class="option" onclick="select(this, true)">⚠️ Нет, современные краски ядовиты, а раньше использовали слюну для пигментов</div>
-                    <div class="option" onclick="select(this, false)">🍵 Да, это художественный аналог проверки микрофона: «раз-два-три, кисть работает</div>
-                    <div class="option" onclick="select(this, false)">🎭 Облизывают, но не свои — это новый вид перформанса</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Финиш!</strong>
-                    В старину художники разводили краски слюной (ферменты помогают связке), но многие пигменты были ядовиты (свинец, мышьяк). Современные художники не облизывают — или делают это в последний раз. Дали, кстати, усы делал специально, не по вине красок.
-                </div>
-            </div>
-
-            <!-- Q11 - NEW! -->
-            <div class="quiz-card" data-answered="false">
-                <div class="quiz-number">11</div>
-                <div class="quiz-question">Кто рисует лучше — собаки или коты?</div>
-                <div class="quiz-options">
-                    <div class="option" onclick="select(this, false)">🐕 Собаки — они рисуют хвостом по песку, это land art</div>
-                    <div class="option" onclick="select(this, true)">🐈 Коты — они бегают по клавиатуре и создают генеративный арт</div>
-                    <div class="option" onclick="select(this, false)">🐕🐈 Они рисуют одинаково плохо, но критики всё равно найдут смысл</div>
-                    <div class="option" onclick="select(this, false)">🎨 Никто — они предпочитают инсталляции из шерсти и песка в лотке</div>
-                </div>
-                <button class="reveal-btn" onclick="reveal(this)">✨ Узнать правду</button>
-                <div class="answer-reveal">
-                    <strong>🎯 Мяу!</strong>
-                    Коты действительно создают «генеративный арт», когда гуляют по клавиатуре — случайные комбинации символов, которые потом можно выставить как «постмодерн». Собаки предпочитают land art в саду. А самый известный «художник-животное» — китайская свинья Пигкассо, которая продаёт картины за тысячи долларов. Искусство бессмысленно без зрителя — даже если зритель пушистый!
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- FUN FACTS -->
-    <div class="fun-facts">
-        <section>
-            <div class="section-header">
-                <span class="section-emoji">💡</span>
-                <h2 class="section-title">Бонус: факты для искусствоведа</h2>
-                <p class="section-sub">То, что знают только посвящённые</p>
-            </div>
-            
-            <div class="fact-card">
-                <h3>👶 Почему дети рисуют «хорошо», а взрослые «плохо»?</h3>
-                <p>Дети рисуют искренне, взрослые — боятся. Художник — тот, кто научился снова не бояться.</p>
-            </div>
-            
-            <div class="fact-card">
-                <h3>⬛ Что после «Чёрного квадрата»?</h3>
-                <p>Цветной квадрат, белый квадрат, или ничего. Малевич освободил искусство от предмета — и оно пошло искать новые формы.</p>
-            </div>
-            
-            <div class="fact-card">
-                <h3>🐦 Может ли искусство пугать голубей?</h3>
-                <p>Исследования показывают: птицы избегают нарисованных глаз хищников на фресках. А вот понимают ли они абстракцию — пока неизвестно.</p>
-            </div>
-            
-            <div class="fact-card">
-                <h3>🖼️ Зачем художник пишет картины и никому не показывает?</h3>
-                <p>Леонардо, Малевич, Ван Гог — многие шедевры увидели свет только после смерти автора. Иногда искусство нужно самому художнику больше, чем миру.</p>
-            </div>
-            
-            <div class="fact-card">
-                <h3>🐷 Пигкассо — настоящий художник?</h3>
-                <p>Китайская свинья из ЮАР рисует картины хвостом в пластиковом боксе. Её работы продаются за $3,000–$5,000. Критики говорят: «Это про хаос современного мира». Свинья, вероятно, просто ищет еду.</p>
-            </div>
-        </section>
-    </div>
-
-    <!-- SURPRISE BOX -->
-    <div class="surprise-section">
-        <div class="sparkle" style="top:20%;left:10%;animation-delay:0s;"></div>
-        <div class="sparkle" style="top:30%;right:15%;animation-delay:0.5s;"></div>
-        <div class="sparkle" style="top:60%;left:20%;animation-delay:1s;"></div>
-        <div class="sparkle" style="top:70%;right:10%;animation-delay:1.5s;"></div>
-        
-        <h2 class="surprise-title">🎁 А теперь — сюрприз!</h2>
-        <p class="surprise-sub">Нажми на коробку, чтобы узнать, что внутри</p>
-        
-        <div class="gift-box-container" onclick="openGift()">
-            <div class="gift-box" id="giftBox">
-                <div class="gift-lid"></div>
-                <div class="gift-body">
-                    <div class="gift-ribbon"></div>
-                    <div class="gift-ribbon-horizontal"></div>
-                    <div class="gift-text">🎁</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="surprise-content" id="surpriseContent">
-            <div class="surprise-emoji">🎨✨🥂</div>
-            <h3>Женя!</h3>
-            <p>Поздравляем! Ты знаешь искусство так глубоко, что даже эти абсурдные факты — для тебя очевидность.</p>
-            <div class="surprise-quote">
-                «Пусть твой взгляд всегда находит прекрасное везде, даже там, где другие видят только трещины. И пусть каждый новый день приносит тебе хотя бы один момент, когда хочется сказать: «Вот это да!»»
-            </div>
-            <p>Спасибо, что делаешь мир чуть более понятным и гораздо более прекрасным. Благодаря тебе мы прошли весь квиз и теперь знаем об искусстве почти столько же, сколько Дюрер знал о китах...</p>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <!-- FOOTER -->
-<div class="footer">
-    <div class="footer-emoji">💖</div>
-
-    <h2>С Днём Рождения!</h2>
-
-    <p>
-        Пусть в новом году тебе по-прежнему встречаются удивительные истории,
-        странные факты и прекрасные люди. Желаю тебе радости от открытий,
-        вдохновения без дедлайнов, путешествий с хорошими музеями по пути и
-        разговоров, после которых хочется немедленно что-нибудь узнать.
-    </p>
-
-    <div class="signature">
-        С любовью ❤️
-    </div>
+  </div>
 </div>
 
-    <script>
-        // Music
-        let musicPlaying = false;
-        const musicBtn = document.getElementById('musicBtn');
-        const bgMusic = document.getElementById('bgMusic');
-        
-        function toggleMusic() {
-            if (musicPlaying) {
-                bgMusic.pause();
-                musicBtn.textContent = '🎵';
-                musicBtn.classList.remove('playing');
-                musicPlaying = false;
-            } else {
-                bgMusic.play().catch(e => {
-                    // Fallback: try to play on next user interaction
-                    console.log('Music autoplay blocked, will try on interaction');
-                });
-                musicBtn.textContent = '🔊';
-                musicBtn.classList.add('playing');
-                musicPlaying = true;
-            }
-        }
-        
-        // Confetti
-        function createConfetti() {
-            const container = document.getElementById('confetti');
-            const colors = ['#E85D75', '#F15BB5', '#FEE440', '#2EC4B6', '#9B5DE5', '#D4A843', '#fff'];
-            
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                confetti.style.animationDelay = Math.random() * 5 + 's';
-                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                confetti.style.width = (Math.random() * 8 + 4) + 'px';
-                confetti.style.height = (Math.random() * 8 + 4) + 'px';
-                container.appendChild(confetti);
-            }
-        }
-        createConfetti();
-        
-        // Quiz logic
-        let answeredCount = 0;
-        const totalQuestions = 11;
-        
-        function select(element, isCorrect) {
-            const card = element.closest('.quiz-card');
-            const options = card.querySelectorAll('.option');
-            
-            if (card.dataset.answered === 'true') return;
-            card.dataset.answered = 'true';
-            
-            options.forEach(opt => {
-                opt.classList.remove('correct', 'wrong');
-                opt.style.pointerEvents = 'none';
-            });
-            
-            if (isCorrect) {
-                element.classList.add('correct');
-            } else {
-                element.classList.add('wrong');
-                options.forEach(opt => {
-                    if (opt.getAttribute('onclick').includes('true')) {
-                        opt.classList.add('correct');
-                    }
-                });
-            }
-            
-            answeredCount++;
-            updateProgress();
-        }
-        
-        function reveal(button) {
-            const reveal = button.nextElementSibling;
-            reveal.classList.add('show');
-            button.style.display = 'none';
-        }
-        
-        function updateProgress() {
-            const progress = (answeredCount / totalQuestions) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-        }
-        
-        // Gift box
-        function openGift() {
-            const box = document.getElementById('giftBox');
-            const content = document.getElementById('surpriseContent');
-            
-            box.classList.add('opened');
-            
-            // Auto-play music on gift open if not playing
-            if (!musicPlaying) {
-                toggleMusic();
-            }
-            
-            // Extra confetti explosion
-            for (let i = 0; i < 30; i++) {
-                const confetti = document.createElement('div');
-                confetti.style.position = 'fixed';
-                confetti.style.left = '50%';
-                confetti.style.top = '50%';
-                confetti.style.width = '10px';
-                confetti.style.height = '10px';
-                confetti.style.background = ['#E85D75', '#F15BB5', '#FEE440', '#2EC4B6', '#9B5DE5'][Math.floor(Math.random()*5)];
-                confetti.style.borderRadius = '50%';
-                confetti.style.zIndex = '9999';
-                confetti.style.pointerEvents = 'none';
-                document.body.appendChild(confetti);
-                
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 300 + 100;
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity;
-                
-                confetti.animate([
-                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
-                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
-                ], {
-                    duration: 1000 + Math.random() * 500,
-                    easing: 'cubic-bezier(0, .9, .57, 1)'
-                }).onfinish = () => confetti.remove();
-            }
-            
-            setTimeout(() => {
-                content.classList.add('show');
-                content.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 600);
-        }
-    </script>
+<!-- MUSIC -->
+<button id="musicBtn" onclick="toggleMusic()" title="Музыка">
+  <div class="mi"><span></span><span></span><span></span><span></span></div>
+</button>
+<audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
 
+<!-- HERO -->
+<div class="hero">
+  <div class="ms ms-a" style="position:absolute;top:0;left:0;right:0;height:14px;z-index:1"></div>
+  <div class="hero-tiles" id="heroTiles"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">День рождения · 10 июня 2026</div>
+    <h1 class="hero-title">Арт&#8209;квиз<br>для <em>Жени</em></h1>
+    <p class="hero-lead">Квиз создан в честь Жени — но пройти его может каждый. Отвечай на 11 вопросов и узнай свой уровень в мире искусства. Потому что Дюрер тоже не видел кита.</p>
+    <div class="hero-date">10 июня 2026</div>
+  </div>
+  <div class="hero-scroll" onclick="document.getElementById('progress-anchor').scrollIntoView({behavior:'smooth'})">
+    <div class="scroll-line"></div>
+    <span>Начать</span>
+  </div>
+  <div class="ms ms-b" style="position:absolute;bottom:0;left:0;right:0;height:14px;z-index:1"></div>
+</div>
+
+<!-- MOSAIC BAND 1 -->
+<div class="mosaic-band">
+  <div class="mosaic-grid" id="mosaicBand1" style="max-width:100%;padding:3px 0"></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap" id="progress-anchor">
+  <div class="ms ms-a ms-thin"></div>
+  <div class="progress-inner">
+    <span class="progress-label">Прогресс</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-count" id="progressCount">0 / 11</span>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<section class="quiz-section" id="quiz-section">
+  <div class="sec-header reveal">
+    <span class="sec-eyebrow">Искусствоведение</span>
+    <h2 class="sec-title">Одиннадцать вопросов</h2>
+    <p class="sec-sub">Выбери ответ — карточка перевернётся и покажет факт</p>
+    <div class="orn"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line"></div></div>
+  </div>
+  <div class="quiz-grid" id="quizGrid">
+
+    <div class="quiz-card" data-q="1"><div class="card-scene"><div class="card-flipper" id="flip-1">
+      <div class="card-front">
+        <div class="card-corner" id="cc1"></div>
+        <span class="q-badge">01</span>
+        <p class="q-text">Первый скульптор сотворил Венеру из… ?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Из пластилина, который ему подарили на день рождения</button>
+          <button class="opt" data-correct="true">Из бивня мамонта — потому что камень слишком твёрдый</button>
+          <button class="opt" data-correct="false">Из глины, но она потрескалась, и он сказал: «Это авангард»</button>
+          <button class="opt" data-correct="false">Из хлеба, чтобы потом съесть в голодный год</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Венера из бивня мамонта</p><div class="back-div"></div>
+        <p class="back-body">Венера Виллендорфская и другие статуэтки палеолита вырезались из бивня мамонта, кости или мягкого стеатита. Пластилин тогда ещё не изобрели — примерно 30 000 лет спустя.</p>
+        <button class="back-btn" onclick="flipBack(1)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="2"><div class="card-scene"><div class="card-flipper" id="flip-2">
+      <div class="card-front">
+        <div class="card-corner" id="cc2"></div>
+        <span class="q-badge">02</span>
+        <p class="q-text">Почему греческие статуи сейчас белые, а раньше были такие «веселенькие»?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Потому что время — лучший ластик</button>
+          <button class="opt" data-correct="true">Они были раскрашены яркими красками, но краска облезла</button>
+          <button class="opt" data-correct="false">Скульпторы сначала раскрасили, но потом передумали и отмыли</button>
+          <button class="opt" data-correct="false">Белый мрамор был дешевле цветного</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Античность была куда ярче</p><div class="back-div"></div>
+        <p class="back-body">Греки и римляне раскрашивали статуи: красные губы, карие глаза, орнаменты на доспехах. Белая классика — миф Нового времени. Учёные восстанавливают оригинальный цвет с помощью ультрафиолета.</p>
+        <button class="back-btn" onclick="flipBack(2)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="3"><div class="card-scene"><div class="card-flipper" id="flip-3">
+      <div class="card-front">
+        <div class="card-corner" id="cc3"></div>
+        <span class="q-badge">03</span>
+        <p class="q-text">Почему в византийских церквях золотой фон — это не просто «мне нравится блестяшка»?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Потому что золото отпугивает вампиров</button>
+          <button class="opt" data-correct="true">Золото символизирует божественный свет, а не небо</button>
+          <button class="opt" data-correct="false">Художники получали золото по весу, чем больше — тем богаче</button>
+          <button class="opt" data-correct="false">Золото было единственным, что не выцветало при свечах</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Золото как теология</p><div class="back-div"></div>
+        <p class="back-body">Золотой фон в иконе — не декорация, а богословская идея: свет, исходящий от Бога, предшествующий сотворению мира. Иоанн Дамаскин обосновал это в трактате против иконоборцев. Версия с вампирами тоже интересная.</p>
+        <button class="back-btn" onclick="flipBack(3)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="4"><div class="card-scene"><div class="card-flipper" id="flip-4">
+      <div class="card-front">
+        <div class="card-corner" id="cc4"></div>
+        <span class="q-badge">04</span>
+        <p class="q-text">Леонардо 16 лет носил «Мону Лизу» с собой и не отдавал заказчику. Это:</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Первый случай арт-букинга в истории</button>
+          <button class="opt" data-correct="true">Он считал картину незаконченной и постоянно подправлял</button>
+          <button class="opt" data-correct="false">Заказчик не сказал свой адрес, а Леонардо не знал, куда отправлять</button>
+          <button class="opt" data-correct="false">Он просто захотел оставить её себе. Такая она была красивая.</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Перфекционизм длиной в жизнь</p><div class="back-div"></div>
+        <p class="back-body">Леонардо работал над портретом примерно с 1503 по 1517 год. Умер во Франции — картина перешла к Франциску I. Носил с собой как любимую книгу, которую не хочется отдавать.</p>
+        <button class="back-btn" onclick="flipBack(4)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="5"><div class="card-scene"><div class="card-flipper" id="flip-5">
+      <div class="card-front">
+        <div class="card-corner" id="cc5"></div>
+        <span class="q-badge">05</span>
+        <p class="q-text">Дюрер нарисовал кита, хотя никогда его не видел. Как?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Дюрер доказал: чтобы нарисовать кита, необязательно видеть кита. Иногда хватает уверенности в себе.</button>
+          <button class="opt" data-correct="true">Получил письменное описание и один беглый набросок — и нарисовал кита по чужим словам</button>
+          <button class="opt" data-correct="false">Ему приснился кит, и он зарисовал сон</button>
+          <button class="opt" data-correct="false">Нарисовал дельфина и подписал «кит» — никто не проверял</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Кит из письма</p><div class="back-div"></div>
+        <p class="back-body">На самом деле Дюрер рисовал носорога — но принцип тот же. В 1515 году животное привезли в Лиссабон. Дюреру прислали описание и набросок. Его гравюра с выдуманными деталями 300 лет считалась эталоном. Мораль: уверенность важнее натуры.</p>
+        <button class="back-btn" onclick="flipBack(5)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="6"><div class="card-scene"><div class="card-flipper" id="flip-6">
+      <div class="card-front">
+        <div class="card-corner" id="cc6"></div>
+        <span class="q-badge">06</span>
+        <p class="q-text">Репин писал «Бурлаков на Волге» в Петербурге. Где он взял Волгу?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Нарисовал на стене и сказал натурщикам: «Представьте…»</button>
+          <button class="opt" data-correct="true">Специально ездил на Волгу, делал этюды, а затем писал в мастерской</button>
+          <button class="opt" data-correct="false">Там же, где Дюрер взял кита.</button>
+          <button class="opt" data-correct="false">Подписал «Волга», хотя это была Нева — и никто не заметил</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Две поездки на Волгу</p><div class="back-div"></div>
+        <p class="back-body">Репин дважды ездил на Волгу — в 1870 и 1872 годах. Делал этюды, изучал типажи. Итоговая картина создавалась в петербургской мастерской. В отличие от Дюрера — своих бурлаков он видел лично.</p>
+        <button class="back-btn" onclick="flipBack(6)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="7"><div class="card-scene"><div class="card-flipper" id="flip-7">
+      <div class="card-front">
+        <div class="card-corner" id="cc7"></div>
+        <span class="q-badge">07</span>
+        <p class="q-text">Почему у импрессионистов всё размазано?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Они рисовали в метро, и всё тряслось</button>
+          <button class="opt" data-correct="true">Ловили мгновение — глаз видит пятна, мозг собирает картинку</button>
+          <button class="opt" data-correct="false">После Дюрера с китом художники поняли: детали переоценены</button>
+          <button class="opt" data-correct="false">Они специально мазали, чтобы критики не придирались</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Мазок как метод</p><div class="back-div"></div>
+        <p class="back-body">Импрессионисты работали быстро, фиксируя один момент освещения. Широкий мазок — не небрежность: смешение цветов происходит в глазу зрителя. Само слово «импрессионизм» появилось как насмешка критика над картиной Моне.</p>
+        <button class="back-btn" onclick="flipBack(7)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="8"><div class="card-scene"><div class="card-flipper" id="flip-8">
+      <div class="card-front">
+        <div class="card-corner" id="cc8"></div>
+        <span class="q-badge">08</span>
+        <p class="q-text">Эшер рисовал так, что голова кругом идёт. Он сам не сходил с ума?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Сходил, но аккуратно, по спирали</button>
+          <button class="opt" data-correct="true">Нет, он был математиком в душе — для него это логические задачи</button>
+          <button class="opt" data-correct="false">Да, но психолог сказал: «Продолжайте, это терапия»</button>
+          <button class="opt" data-correct="false">После попытки понять кита Дюрера зрители были готовы ко всему</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Художник и математики</p><div class="back-div"></div>
+        <p class="back-body">Эшер переписывался с кристаллографом Коксетером и математиком Пенроузом. Сам говорил: «Я художник, а не математик» — но интуитивно работал с неевклидовой геометрией задолго до того, как фракталы стали наукой.</p>
+        <button class="back-btn" onclick="flipBack(8)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="9"><div class="card-scene"><div class="card-flipper" id="flip-9">
+      <div class="card-front">
+        <div class="card-corner" id="cc9"></div>
+        <span class="q-badge">09</span>
+        <p class="q-text">Абстрактное искусство — это мазня? Ротко бы ответил:</p>
+        <div class="options">
+          <button class="opt" data-correct="false">«Да, но очень дорогая мазня»</button>
+          <button class="opt" data-correct="true">«Нет, это портал в эмоции — подойди ближе, и ты уйдёшь в цвет»</button>
+          <button class="opt" data-correct="false">«Мазня — это когда случайно. Я рисовал 20 слоёв, это стратегия»</button>
+          <button class="opt" data-correct="false">«После кита Дюрера меня уже ничем не обидеть»</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Все варианты хороши, но главное…</p><div class="back-div"></div>
+        <p class="back-body">Ротко считал: его поля цвета вызывают глубокие эмоции, если смотреть вблизи и долго. 20 слоёв краски — работа, не случайность. И да, его картины стоят миллионы — «дорогая мазня» тоже верно.</p>
+        <button class="back-btn" onclick="flipBack(9)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="10"><div class="card-scene"><div class="card-flipper" id="flip-10">
+      <div class="card-front">
+        <div class="card-corner" id="cc10"></div>
+        <span class="q-badge">10</span>
+        <p class="q-text">Облизывают ли художники кисточки?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Только после того, как кисточка первая облизала художника.</button>
+          <button class="opt" data-correct="true">Нет, современные краски ядовиты, а раньше слюну использовали для пигментов</button>
+          <button class="opt" data-correct="false">Да, это художественный аналог проверки микрофона: «раз-два-три, кисть работает»</button>
+          <button class="opt" data-correct="false">Облизывают, но не свои — это новый вид перформанса</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Ядовитая палитра</p><div class="back-div"></div>
+        <p class="back-body">Свинцовые белила, швейнфуртская зелень (мышьяк), киноварь (ртуть) — стандартный набор до XIX века. Дюрер, кстати, умер не от кита — а вот от красок некоторые умирали.</p>
+        <button class="back-btn" onclick="flipBack(10)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+    <div class="quiz-card" data-q="11"><div class="card-scene"><div class="card-flipper" id="flip-11">
+      <div class="card-front">
+        <div class="card-corner" id="cc11"></div>
+        <span class="q-badge">11</span>
+        <p class="q-text">Кто рисует лучше — собаки или коты?</p>
+        <div class="options">
+          <button class="opt" data-correct="false">Собаки — они рисуют хвостом по песку, это land art</button>
+          <button class="opt" data-correct="true">Коты — они бегают по клавиатуре и создают генеративный арт</button>
+          <button class="opt" data-correct="false">Они рисуют одинаково плохо, но критики всё равно найдут смысл</button>
+          <button class="opt" data-correct="false">Никто — они предпочитают инсталляции из шерсти и песка в лотке</button>
+        </div>
+      </div>
+      <div class="card-back"><span class="back-label">Факт</span>
+        <p class="back-title">Мяу!</p><div class="back-div"></div>
+        <p class="back-body">Коты создают «генеративный арт», гуляя по клавиатуре. Собаки предпочитают land art в саду. Свинья Пигкассо из ЮАР продаёт картины за тысячи долларов. И все они — не видели кита. Что не помешало им творить.</p>
+        <button class="back-btn" onclick="flipBack(11)">Вернуться к вопросу</button>
+      </div>
+    </div></div></div>
+
+  </div>
+</section>
+
+<!-- MOSAIC BAND 2 -->
+<div class="mosaic-band">
+  <div class="mosaic-grid" id="mosaicBand2" style="max-width:100%;padding:3px 0"></div>
+</div>
+
+<!-- PORTRAIT -->
+<div class="portrait-section" id="portraitSection">
+  <div class="sec-header" style="margin-bottom:3rem">
+    <span class="sec-eyebrow">Результат</span>
+    <h2 class="sec-title">Твой портрет</h2>
+    <div class="orn"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line"></div></div>
+  </div>
+  <div class="portrait-card" id="portraitCard">
+    <div class="portrait-head" id="portraitHead">
+      <div class="portrait-mosaic-corner" id="portraitMosaicCorner"></div>
+      <span class="portrait-eyebrow">Словесный портрет</span>
+      <h3 class="portrait-title" id="portraitTitle">...</h3>
+    </div>
+    <div class="ms ms-a ms-thin"></div>
+    <div class="portrait-body">
+      <div class="score-row">
+        <div class="score-badge" id="scoreBadge">
+          <div class="score-num" id="portraitScore">0</div>
+          <div class="score-of">из 11</div>
+        </div>
+        <div class="score-meta">
+          <div class="score-level-name" id="scoreLevelName"></div>
+          <div class="score-level-label">Уровень экспертности</div>
+        </div>
+      </div>
+      <p class="portrait-text" id="portraitText"></p>
+      <div class="portrait-traits" id="portraitTraits"></div>
+      <p class="portrait-closing" id="portraitClosing"></p>
+      <div class="zhenya-tip" id="zhenyaTip"></div>
+      <div class="recs" id="recsBlock" style="display:none">
+        <div class="recs-title" id="recsTitle"></div>
+        <div class="recs-grid" id="recsGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOSAIC BAND 3 -->
+<div class="mosaic-band">
+  <div class="mosaic-grid" id="mosaicBand3" style="max-width:100%;padding:3px 0"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <h2 class="footer-title">С Днём Рождения, Женя!</h2>
+  <p class="footer-text">Пусть в новом году тебе по-прежнему встречаются удивительные истории, странные факты и прекрасные люди. Желаю вдохновения без дедлайнов, путешествий с хорошими музеями по пути и разговоров, после которых хочется немедленно что-нибудь узнать. И пусть всегда рядом будет тот, кто не видел кита — но очень хочет.</p>
+  <div class="footer-rule"></div>
+  <div class="footer-sig">С любовью</div>
+</div>
+<div class="ms ms-b"></div>
+
+<script>
+  /* ── STATE ── */
+  let userName='', answered=0, correct=0;
+  const total=11, results={};
+
+  /* ── LEVEL CONFIG ── */
+  const LEVELS=[
+    {min:11,max:11,name:'Хранитель знания',      bg:'linear-gradient(135deg,#6B2A8C,#A040D0)',colors:['#6B2A8C','#9B50C0','#C080E0','#A040D0','#7B3AAC'],traits:['Системное мышление','Историческая память','Внимание к контексту','Аналитический взгляд'],zhenya_f:'«Нам с тобой есть о чём поговорить. За чашкой чего-нибудь тёплого.»',zhenya_m:'«Нам с тобой есть о чём поговорить. За чашкой чего-нибудь тёплого.»',closing:'Такой результат встречается редко. Поздравляю — и с квизом, и с днём рождения.'},
+    {min:9, max:10,name:'Знающий зритель',       bg:'linear-gradient(135deg,#1A5C8A,#2A8ACC)',colors:['#1A5C8A','#2A8ACC','#4AACEC','#1A7AAA','#2B6A9A'],traits:['Широкая эрудиция','Профессиональный кругозор','Умение читать образ'],zhenya_f:'«Ты почти там. Давай я покажу тебе ещё пару поворотов — и ты придёшь сама.»',zhenya_m:'«Ты почти там. Давай я покажу тебе ещё пару поворотов — и ты придёшь сам.»',closing:s=>s+' из 11 — очень сильный результат.'},
+    {min:7, max:8, name:'Вдумчивый любитель',    bg:'linear-gradient(135deg,#2A7A50,#3AAA72)',colors:['#2A7A50','#3AAA72','#5ACA92','#4A9A62','#3A8A5C'],traits:['Художественный вкус','Любопытство','Интуитивное восприятие'],zhenya_f:'«Ты видишь. Это главное. Остальное — дело хорошей экскурсии.»',zhenya_m:'«Ты видишь. Это главное. Остальное — дело хорошей экскурсии.»',closing:s=>s+' из 11 — хороший, честный результат.'},
+    {min:5, max:6, name:'Открытый исследователь',bg:'linear-gradient(135deg,#C47A1A,#D4963A)',colors:['#C47A1A','#D4963A','#F0B65A','#E0A040','#CC8C28'],traits:['Открытость к новому','Эмпатический взгляд','Готовность удивляться'],zhenya_f:'«Вопросы — лучшее, что можно принести в музей. Пойдём — покажу.»',zhenya_m:'«Вопросы — лучшее, что можно принести в музей. Пойдём — покажу.»',closing:s=>s+' из 11 — честная отправная точка.'},
+    {min:3, max:4, name:'Свежий взгляд',         bg:'linear-gradient(135deg,#C04828,#E87050)',colors:['#C04828','#E87050','#F09070','#D06040','#CC5838'],traits:['Непредвзятый взгляд','Потенциал роста','Искренность'],zhenya_f:'«Дюрер тоже не видел кита — и всё равно нарисовал. Начало положено.»',zhenya_m:'«Дюрер тоже не видел кита — и всё равно нарисовал. Начало положено.»',closing:s=>s+' из 11. Самые интересные открытия — впереди.'},
+    {min:0, max:2, name:'Tabula Rasa',           bg:'linear-gradient(135deg,#888068,#B0A888)',colors:['#888068','#A8A080','#C8C0A0','#989078','#B09878'],traits:['Незамутнённый взгляд','Честность с собой','Всё впереди'],zhenya_f:'«Это лучший результат для начала. Серьёзно. Приходи — будем учиться с нуля и с удовольствием.»',zhenya_m:'«Это лучший результат для начала. Серьёзно. Приходи — будем учиться с нуля и с удовольствием.»',closing:s=>s+' из 11. Леонардо начинал с нуля. Ты тоже.'},
+  ];
+  const TEXTS_F=[
+    n=>n+' ответила на все одиннадцать вопросов правильно. Это не случайность — это годы внимательного чтения, смотрения и слушания. История искусства для неё — живая ткань, в которой каждая деталь связана с другой.',
+    n=>n+' знает искусство глубоко — именно так, как знают те, кто провёл много времени с книгами, музеями и подлинными вещами. Несколько вопросов потребовали бы большей специализации — но это точки роста, а не пробелы.',
+    n=>n+' смотрит на искусство с искренним интересом и хорошей базой. Здесь есть и знание, и интуиция — сочетание, которое позволяет не просто смотреть, но и видеть.',
+    n=>n+' подходит к искусству с живым любопытством — и это важнее, чем правильные ответы. Такие люди задают самые точные вопросы в музее.',
+    n=>n+' пришла на квиз без груза готовых ответов — и это ценно. Незнание — лучшая мотивация для изучения. Дюрер не видел кита — но это ему не помешало.',
+    n=>n+' пришла на квиз без академического багажа. Tabula rasa — чистая доска — это не упрёк, это возможность. Леонардо тоже не родился со знанием анатомии.',
+  ];
+  const TEXTS_M=[
+    n=>n+' ответил на все одиннадцать вопросов правильно. Это не случайность — это годы внимательного чтения, смотрения и слушания. История искусства для него — живая ткань, в которой каждая деталь связана с другой.',
+    n=>n+' знает искусство глубоко — именно так, как знают те, кто провёл много времени с книгами, музеями и подлинными вещами. Несколько вопросов потребовали бы большей специализации — но это точки роста, а не пробелы.',
+    n=>n+' смотрит на искусство с искренним интересом и хорошей базой. Здесь есть и знание, и интуиция — сочетание, которое позволяет не просто смотреть, но и видеть.',
+    n=>n+' подходит к искусству с живым любопытством — и это важнее, чем правильные ответы. Такие люди задают самые точные вопросы в музее.',
+    n=>n+' пришёл на квиз без груза готовых ответов — и это ценно. Незнание — лучшая мотивация для изучения. Дюрер не видел кита — но это ему не помешало.',
+    n=>n+' пришёл на квиз без академического багажа. Tabula rasa — чистая доска — это не упрёк, это возможность. Леонардо тоже не родился со знанием анатомии.',
+  ];
+
+  function getLvIdx(s){ return LEVELS.findIndex(l=>s>=l.min&&s<=l.max); }
+
+  /* ── COLOUR ARRAYS ── */
+  const ALL_COLORS=['#B83050','#D4963A','#2B8A8A','#2A4E8C','#4A7A50','#C04828',
+                    '#E05878','#F0C060','#4BBABA','#4A78CC','#72B07A','#E87050',
+                    '#6B2A8C','#A040D0','#C47A1A','#1A5C8A'];
+
+  function randColor(){ return ALL_COLORS[Math.floor(Math.random()*ALL_COLORS.length)]; }
+
+  /* ── HERO TILES ── */
+  const ht=document.getElementById('heroTiles');
+  for(let i=0;i<36;i++){
+    const t=document.createElement('div'); t.className='ht';
+    const sz=22+Math.random()*55;
+    t.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${randColor()};animation-duration:${5+Math.random()*9}s;animation-delay:${Math.random()*9}s`;
+    ht.appendChild(t);
+  }
+
+  /* ── MOSAIC BANDS ── */
+  function fillBand(id, count){
+    const g=document.getElementById(id);
+    for(let i=0;i<count;i++){
+      const d=document.createElement('div'); d.className='mt';
+      d.style.cssText=`background:${randColor()};animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*5}s`;
+      g.appendChild(d);
+    }
+  }
+  fillBand('mosaicBand1',120);
+  fillBand('mosaicBand2',120);
+  fillBand('mosaicBand3',120);
+
+  /* ── CARD CORNERS ── */
+  const CARD_COLORS=[
+    ['#B83050','#D4963A','#E05878','#F0C060','#B83050','#D4963A','#2B8A8A','#F0C060','#B83050'],
+    ['#2B8A8A','#2A4E8C','#4BBABA','#4A78CC','#2B8A8A','#2A4E8C','#4BBABA','#4A78CC','#2B8A8A'],
+    ['#D4963A','#C47A1A','#F0C060','#D4963A','#C47A1A','#F0C060','#D4963A','#C47A1A','#F0C060'],
+    ['#2A4E8C','#6B2A8C','#4A78CC','#A040D0','#2A4E8C','#6B2A8C','#4A78CC','#A040D0','#2A4E8C'],
+    ['#4A7A50','#2B8A8A','#72B07A','#4BBABA','#4A7A50','#2B8A8A','#72B07A','#4BBABA','#4A7A50'],
+    ['#C04828','#B83050','#E87050','#E05878','#C04828','#B83050','#E87050','#E05878','#C04828'],
+    ['#4A78CC','#2A4E8C','#6B2A8C','#4A78CC','#2A4E8C','#A040D0','#4A78CC','#2A4E8C','#6B2A8C'],
+    ['#6B2A8C','#B83050','#A040D0','#E05878','#6B2A8C','#B83050','#A040D0','#E05878','#6B2A8C'],
+    ['#D4963A','#F0C060','#C47A1A','#D4963A','#F0C060','#C47A1A','#D4963A','#F0C060','#C47A1A'],
+    ['#4A7A50','#72B07A','#2B8A8A','#4A7A50','#72B07A','#4BBABA','#4A7A50','#72B07A','#2B8A8A'],
+    ['#E87050','#F0C060','#E05878','#E87050','#F0C060','#E05878','#E87050','#F0C060','#E05878'],
+  ];
+  for(let q=1;q<=11;q++){
+    const cc=document.getElementById('cc'+q);
+    const cols=CARD_COLORS[q-1];
+    for(let i=0;i<9;i++){
+      const d=document.createElement('div'); d.className='cc';
+      d.style.background=cols[i]; cc.appendChild(d);
+    }
+  }
+
+  /* ── GATE ── */
+  function startQuiz(){
+    userName=document.getElementById('nameInput').value.trim()||'Гость';
+    document.getElementById('gate').classList.add('hidden');
+  }
+  document.getElementById('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter')startQuiz();});
+
+  /* ── MUSIC ── */
+  let playing=false;
+  const mBtn=document.getElementById('musicBtn'), audio=document.getElementById('bgMusic');
+  function toggleMusic(){
+    if(playing){audio.pause();mBtn.classList.remove('playing');playing=false;}
+    else{audio.play().catch(()=>{});mBtn.classList.add('playing');playing=true;}
+  }
+
+  /* ── FLIP ── */
+  function setFlipperHeight(qNum){
+    const f=document.getElementById('flip-'+qNum);
+    const b=f.querySelector('.card-back');
+    const prev=b.getAttribute('style')||'';
+    b.style.cssText=prev+';position:static!important;transform:none!important';
+    const h=b.offsetHeight;
+    b.setAttribute('style',prev);
+    f.style.height=h+'px';
+  }
+
+  function handleOption(optEl,qNum,isCorrect){
+    if(results[qNum]!==undefined)return;
+    results[qNum]=isCorrect; if(isCorrect)correct++; answered++;
+    optEl.closest('.quiz-card').querySelectorAll('.opt').forEach(o=>{
+      o.setAttribute('disabled',true);
+      if(o===optEl)o.classList.add('selected');
+    });
+    updateProgress();
+    setTimeout(()=>{setFlipperHeight(qNum);document.getElementById('flip-'+qNum).classList.add('flipped');},320);
+    if(answered===total)setTimeout(showPortrait,900);
+  }
+
+  function flipBack(qNum){
+    const f=document.getElementById('flip-'+qNum);
+    f.style.height=''; f.classList.remove('flipped');
+  }
+
+  function updateProgress(){
+    document.getElementById('progressFill').style.width=(answered/total*100)+'%';
+    document.getElementById('progressCount').textContent=answered+' / '+total;
+  }
+
+  /* ── PORTRAIT ── */
+  function showPortrait(){
+    const sec=document.getElementById('portraitSection');
+    sec.classList.add('show');
+    sec.scrollIntoView({behavior:'smooth',block:'start'});
+    buildPortrait();
+  }
+
+  function buildPortrait(){
+    const n=userName, s=correct, idx=getLvIdx(s), lv=LEVELS[idx];
+    document.getElementById('portraitScore').textContent=s;
+    document.getElementById('portraitHead').style.background=lv.bg;
+    document.getElementById('scoreBadge').style.background=lv.bg;
+    document.getElementById('scoreLevelName').textContent=lv.name;
+    document.getElementById('portraitTitle').innerHTML='<em>'+n+'</em> — '+lv.name;
+    document.getElementById('portraitText').textContent=TEXTS[idx](n);
+    const cf=lv.closing;
+    document.getElementById('portraitClosing').textContent=typeof cf==='function'?cf(s):cf;
+    document.getElementById('zhenyaTip').innerHTML='<strong>Женя:</strong> '+lv.zhenya_f;
+    buildRecs(idx);
+
+    const te=document.getElementById('portraitTraits'); te.innerHTML='';
+    lv.traits.forEach((t,i)=>{
+      const sp=document.createElement('span'); sp.className='trait';
+      sp.textContent=t; sp.style.background=lv.colors[i%lv.colors.length]; te.appendChild(sp);
+    });
+
+    const mc=document.getElementById('portraitMosaicCorner'); mc.innerHTML='';
+    for(let i=0;i<25;i++){
+      const d=document.createElement('div'); d.className='pm';
+      d.style.background=lv.colors[i%lv.colors.length]; mc.appendChild(d);
+    }
+  }
+
+  /* ── RECOMMENDATIONS ── */
+  const RECS = [
+    // 11 — Хранитель знания
+    {title:'Женя, тебе тут делать нечего — ты уже там', items:[
+      {color:'#6B2A8C',icon:'🏛️',label:'Следующий шаг',text:'Флоренция. Уффици. Без путеводителя. Ты справишься.'},
+      {color:'#A040D0',icon:'📖',label:'Почитать',text:'Эрвин Панофский, «Этюды по иконологии» — для удовольствия, не для учёбы.'},
+      {color:'#9B50C0',icon:'🎨',label:'Посмотреть',text:'Любой зал с Вермеером. Медленно. Очень медленно.'},
+      {color:'#7B3AAC',icon:'💬',label:'Женя говорит',text:'«Позвони мне. Нам есть о чём поговорить помимо этого квиза.»'},
+    ]},
+    // 9-10 — Знающий зритель
+    {title:'Почти вершина. Пара шагов — и вид оттуда отличный', items:[
+      {color:'#1A5C8A',icon:'🗺️',label:'Маршрут',text:'Берлинский Пергамон-музей. Там есть вещи, которые изменят твой взгляд на масштаб.'},
+      {color:'#2A8ACC',icon:'📚',label:'Почитать',text:'Кеннет Кларк, «Цивилизация» — легко, умно, увлекательно.'},
+      {color:'#1A7AAA',icon:'👁️',label:'Упражнение',text:'Возьми одну картину в любом музее. Смотри 20 минут. Запиши, что заметил(а) на 15-й минуте.'},
+      {color:'#4AACEC',icon:'💬',label:'Женя говорит',text:'«Ты почти там. Я покажу тебе ещё пару поворотов — обещаю, это недолго.»'},
+    ]},
+    // 7-8 — Вдумчивый любитель
+    {title:'Знание есть. Интуиция есть. Осталось совместить', items:[
+      {color:'#2A7A50',icon:'🎭',label:'Сходить',text:'На любую выставку современного искусства. Без Google. Просто смотреть и чувствовать.'},
+      {color:'#3AAA72',icon:'📖',label:'Почитать',text:'Джон Бёрджер, «Искусство видеть» — тонкая книга о том, как смотреть.'},
+      {color:'#5ACA92',icon:'🖼️',label:'Попробовать',text:'Нарисуй что-нибудь сам(а). Неважно как. Важно — почувствовать руку художника изнутри.'},
+      {color:'#4A9A62',icon:'💬',label:'Женя говорит',text:'«Ты видишь — это главное. Остальному я научу. Приходи на экскурсию.»'},
+    ]},
+    // 5-6 — Открытый исследователь
+    {title:'Любопытство — лучший билет в музей', items:[
+      {color:'#C47A1A',icon:'🚶',label:'Прогулка',text:'Зайди в любой музей без плана. Иди туда, куда тянет. Это уже искусствоведение.'},
+      {color:'#D4963A',icon:'🎬',label:'Посмотреть',text:'Документалка «Взгляд Микеланджело» — 15 минут, которые стоят семестра лекций.'},
+      {color:'#F0B65A',icon:'✏️',label:'Задание',text:'Найди репродукцию любой картины. Придумай ей новое название. Серьёзно.'},
+      {color:'#CC8C28',icon:'💬',label:'Женя говорит',text:'«Вопросы — лучшее, что ты приносишь в музей. Пойдём вместе — я отвечу на все.»'},
+    ]},
+    // 3-4 — Свежий взгляд
+    {title:'Дюрер не видел кита. И ничего — справился', items:[
+      {color:'#C04828',icon:'🐋',label:'Начать с малого',text:'Посмотри на любую картину 5 минут. Не читай подпись. Просто смотри. Это уже шаг.'},
+      {color:'#E87050',icon:'🎧',label:'Послушать',text:'Подкаст «Зачем я это вижу» — разговоры об искусстве без умных слов.'},
+      {color:'#F09070',icon:'🤝',label:'Лайфхак',text:'Познакомься с Женей поближе. Она объяснит про кита так, что ты не забудешь никогда.'},
+      {color:'#D06040',icon:'💬',label:'Женя говорит',text:'«Дюрер не видел кита — и всё равно нарисовал. Ты тоже начнёшь. Обещаю.»'},
+    ]},
+    // 0-2 — Tabula Rasa
+    {title:'Чистая доска — это не провал, это свобода', items:[
+      {color:'#888068',icon:'🌱',label:'Первый шаг',text:'Сфотографируй что-нибудь красивое сегодня. Это уже взгляд художника.'},
+      {color:'#A8A080',icon:'💛',label:'Главное',text:'Мы любим тебя не за знание дат. Совсем не за это.'},
+      {color:'#C8C0A0',icon:'🐘',label:'Знай',text:'Леонардо не сдавал ЕГЭ по истории искусства. И Пикассо тоже.'},
+      {color:'#989078',icon:'💬',label:'Женя говорит',text:'«Это лучший результат для начала. Приходи — будем учиться с нуля и с удовольствием. Правда.»'},
+    ]},
+  ];
+
+  const REC_TITLES = [
+    'Женя, тебе тут делать нечего — ты уже там',
+    'Почти вершина. Пара шагов — и вид оттуда отличный',
+    'Знание есть. Интуиция есть. Осталось совместить',
+    'Любопытство — лучший билет в музей',
+    'Дюрер не видел кита. И ничего — справился',
+    'Чистая доска — это не провал, это свобода',
+  ];
+
+  function buildRecs(idx) {
+    const block = document.getElementById('recsBlock');
+    const grid  = document.getElementById('recsGrid');
+    const title = document.getElementById('recsTitle');
+    block.style.display = 'block';
+    title.textContent = REC_TITLES[idx];
+    grid.innerHTML = '';
+    RECS[idx].items.forEach(r => {
+      const c = document.createElement('div');
+      c.className = 'rec-card';
+      c.style.background = r.color + '12';
+      c.style.border = '1px solid ' + r.color + '30';
+      c.innerHTML = `
+        <span class="rec-icon">${r.icon}</span>
+        <div class="rec-label" style="color:${r.color}">${r.label}</div>
+        <div class="rec-text">${r.text}</div>`;
+      c.style.setProperty('--rc', r.color);
+      c.querySelector(':before') || (() => {
+        const style = c.style;
+      })();
+      // set ::before via inline style trick — use a wrapper
+      const bar = document.createElement('div');
+      bar.style.cssText = `position:absolute;top:0;left:0;right:0;height:4px;background:${r.color};border-radius:14px 14px 0 0`;
+      c.appendChild(bar);
+      grid.appendChild(c);
+    });
+  }
+
+  /* ── REVEAL ── */
+  const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in-view');io.unobserve(x.target);}}),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  const cio=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){setTimeout(()=>x.target.classList.add('visible'),60);cio.unobserve(x.target);}}),{threshold:.07});
+  document.querySelectorAll('.quiz-card').forEach(el=>cio.observe(el));
+
+  /* ── HANDLERS ── */
+  document.querySelectorAll('.quiz-card').forEach(card=>{
+    const qNum=parseInt(card.dataset.q);
+    card.querySelectorAll('.opt').forEach(opt=>{
+      opt.addEventListener('click',()=>handleOption(opt,qNum,opt.dataset.correct==='true'));
+    });
+  });
+</script>
 </body>
 </html>
