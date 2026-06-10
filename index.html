@@ -685,6 +685,14 @@
 
   function getLvIdx(s){ return LEVELS.findIndex(l=>s>=l.min&&s<=l.max); }
 
+  function isFeminineName(name){
+    const n=name.trim().toLowerCase();
+    if(!n||n==='гость')return true;
+    if(n.endsWith('а')||n.endsWith('я'))return true;
+    if(n.endsWith('ь'))return true;
+    return false;
+  }
+
   /* ── COLOUR ARRAYS ── */
   const ALL_COLORS=['#B83050','#D4963A','#2B8A8A','#2A4E8C','#4A7A50','#C04828',
                     '#E05878','#F0C060','#4BBABA','#4A78CC','#72B07A','#E87050',
@@ -800,10 +808,11 @@
     document.getElementById('scoreBadge').style.background=lv.bg;
     document.getElementById('scoreLevelName').textContent=lv.name;
     document.getElementById('portraitTitle').innerHTML='<em>'+n+'</em> — '+lv.name;
-    document.getElementById('portraitText').textContent=TEXTS[idx](n);
+    const fem=isFeminineName(n);
+    document.getElementById('portraitText').textContent=(fem?TEXTS_F:TEXTS_M)[idx](n);
     const cf=lv.closing;
     document.getElementById('portraitClosing').textContent=typeof cf==='function'?cf(s):cf;
-    document.getElementById('zhenyaTip').innerHTML='<strong>Женя:</strong> '+lv.zhenya_f;
+    document.getElementById('zhenyaTip').innerHTML='<strong>Женя:</strong> '+(fem?lv.zhenya_f:lv.zhenya_m);
     buildRecs(idx);
 
     const te=document.getElementById('portraitTraits'); te.innerHTML='';
@@ -890,11 +899,6 @@
         <span class="rec-icon">${r.icon}</span>
         <div class="rec-label" style="color:${r.color}">${r.label}</div>
         <div class="rec-text">${r.text}</div>`;
-      c.style.setProperty('--rc', r.color);
-      c.querySelector(':before') || (() => {
-        const style = c.style;
-      })();
-      // set ::before via inline style trick — use a wrapper
       const bar = document.createElement('div');
       bar.style.cssText = `position:absolute;top:0;left:0;right:0;height:4px;background:${r.color};border-radius:14px 14px 0 0`;
       c.appendChild(bar);
